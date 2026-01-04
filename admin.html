@@ -445,7 +445,7 @@ kulowa;comer;verbo;LHL"></textarea>
     
     <script>
         // Configuração
-        const ADMIN_PASSWORD = 'emakhua2026'; // Altere esta senha!
+        const ADMIN_PASSWORD = '2365'; // Altere esta senha!
         let db = null;
         let SQL = null;
         
@@ -473,38 +473,140 @@ kulowa;comer;verbo;LHL"></textarea>
         }
         
         // Inicializar banco de dados
-        async function initDatabase() {
-            try {
-                // Carregar SQL.js
-                SQL = await window.initSqlJs({
-                    locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
-                });
-                
-                // Carregar banco do localStorage
-                const savedDB = localStorage.getItem('emakhua_database');
-                
-                if (savedDB) {
-                    const data = new Uint8Array(JSON.parse(savedDB));
-                    db = new SQL.Database(data);
-                    showMessage('✅ Banco carregado com sucesso!', 'success');
-                } else {
-                    // Criar novo banco
-                    db = new SQL.Database();
-                    createTables();
-                    showMessage('🆕 Novo banco criado!', 'success');
-                }
-                
-                // Configurar tabs
-                setupTabs();
-                
-                return true;
-                
-            } catch (error) {
-                showMessage(`❌ ERRO: ${error.message}`, 'error');
-                console.error('Erro detalhado:', error);
-                return false;
-            }
+        // No admin-simple.html, modifique estas funções:
+
+// Substituir a função initDatabase() por:
+async function initDatabase() {
+    try {
+        // Inicializar banco compartilhado
+        const success = await SharedDB.init();
+        
+        if (success) {
+            showMessage('✅ Banco carregado com sucesso!', 'success');
+            loadWordList();
+            setupTabs();
+            return true;
+        } else {
+            showMessage('❌ Erro ao carregar banco', 'error');
+            return false;
         }
+        
+    } catch (error) {
+        showMessage(`❌ ERRO: ${error.message}`, 'error');
+        return false;
+    }
+}
+
+// Substituir a função addWord() por:
+function addWord() {
+    const palavra = {
+        emakhua: document.getElementById('emakhua').value.trim(),
+        portugues: document.getElementById('portugues').value.trim(),
+        classe_gramatical: document.getElementById('classe').value || null,
+        tom: document.getElementById('tom').value.trim() || null,
+        exemplo_emakhua: document.getElementById('exemplo_emakhua').value.trim() || null,
+        exemplo_traducao: document.getElementById('exemplo_traducao').value.trim() || null
+    };
+    
+    // Validação
+    if (!palavra.emakhua || !palavra.portugues) {
+        showMessage('Preencha a palavra em Emakhua e a tradução!', 'error');
+        return;
+    }
+    
+    // Usar banco compartilhado
+    const resultado = SharedDB.addWord(palavra);
+    
+    if (resultado.success) {
+        // Limpar formulário
+        document.getElementById('emakhua').value = '';
+        document.getElementById('portugues').value = '';
+        document.getElementById('classe').value = '';
+        document.getElementById('tom').value = '';
+        document.getElementById('exemplo_emakhua').value = '';
+        document.getElementById('exemplo_traducao').value = '';
+        
+        // Atualizar lista
+        loadWordList();
+        
+        showMessage(`✅ "${palavra.emakhua}" adicionada com sucesso! ID: ${resultado.id}`, 'success');
+        
+        // Disparar evento para atualizar dicionário principal
+        dispatchDatabaseUpdate();
+    } else {
+        showMessage(`❌ Erro: ${resultado.error}`, 'error');
+    }
+}
+
+// Substituir a função loadWordList() por:
+function loadWordList() {
+    const palavras = SharedDB.getAllWords();
+    const container = document.getElementById('wordList');
+    
+    if (!palavras || palavras.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Nenhuma palavra cadastrada.</p>';
+        return;
+    }
+    
+    let html = '';
+    
+    palavras.forEach(palavra => {
+        html += `
+            <div class="word-item">
+                <div class="word-info">
+                    <div class="word-emakhua">${escapeHtml(palavra.emakhua)}</div>
+                    <div>${escapeHtml(palavra.portugues)}</div>
+                    <small>${palavra.classe_gramatical ? `Classe: ${palavra.classe_gramatical}` : ''} 
+                           ${palavra.tom ? ` | Tom: ${palavra.tom}` : ''}</small>
+                </div>
+                <div class="word-actions">
+                    <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.9rem;" 
+                            onclick="deleteWord(${palavra.id})">
+                        Excluir
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Adicionar função deleteWord() no banco compartilhado:
+function deleteWord(id) {
+    if (!confirm('Tem certeza que deseja excluir esta palavra?')) {
+        return;
+    }
+    
+    try {
+        // Desativar palavra (não excluir fisicamente)
+        SharedDB.db.run('UPDATE palavras SET ativo = 0 WHERE id = ?', [id]);
+        SharedDB.saveToLocalStorage();
+        
+        // Atualizar lista
+        loadWordList();
+        
+        showMessage('✅ Palavra excluída com sucesso!', 'success');
+        
+        // Disparar evento para atualizar dicionário principal
+        dispatchDatabaseUpdate();
+        
+    } catch (error) {
+        showMessage(`❌ Erro: ${error.message}`, 'error');
+    }
+}
+
+// Função para disparar evento de atualização
+function dispatchDatabaseUpdate() {
+    // Disparar evento personalizado
+    const event = new CustomEvent('databaseUpdated', {
+        detail: { timestamp: new Date().toISOString() }
+    });
+    window.dispatchEvent(event);
+    
+    // Também salvar no localStorage como sinal
+    localStorage.setItem('db_last_update', new Date().toISOString());
+}
         
         // Criar tabelas
         function createTables() {
@@ -584,47 +686,6 @@ kulowa;comer;verbo;LHL"></textarea>
                 
             } catch (error) {
                 showMessage(`❌ Erro: ${error.message}`, 'error');
-            }
-        }
-        
-        // Carregar lista de palavras
-        function loadWordList() {
-            if (!db) return;
-            
-            try {
-                const result = db.exec('SELECT * FROM palavras ORDER BY emakhua');
-                const container = document.getElementById('wordList');
-                
-                if (result.length === 0 || result[0].values.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">Nenhuma palavra cadastrada.</p>';
-                    return;
-                }
-                
-                const words = result[0].values;
-                let html = '';
-                
-                words.forEach(word => {
-                    html += `
-                        <div class="word-item">
-                            <div class="word-info">
-                                <div class="word-emakhua">${escapeHtml(word[1])}</div>
-                                <div>${escapeHtml(word[2])}</div>
-                                <small>${word[3] ? `Classe: ${word[3]}` : ''} ${word[4] ? ` | Tom: ${word[4]}` : ''}</small>
-                            </div>
-                            <div class="word-actions">
-                                <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.9rem;" 
-                                        onclick="deleteWord(${word[0]})">
-                                    Excluir
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                container.innerHTML = html;
-                
-            } catch (error) {
-                console.error('Erro ao carregar palavras:', error);
             }
         }
         
@@ -1044,5 +1105,7 @@ kulowa;comer;verbo;LHL"></textarea>
             return div.innerHTML;
         }
     </script>
+// Adicionar no final do arquivo admin-simple.html:
+<script src="shared-database.js"></script>
 </body>
 </html>

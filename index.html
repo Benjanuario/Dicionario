@@ -1,1361 +1,905 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dicionário Emakhua-Português</title>
-    
-    <!-- Fontes -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        /* Reset e Variáveis */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        :root {
-            /* Cores principais */
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --dark-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.85);
-            --text-muted: rgba(255, 255, 255, 0.6);
-            --accent-color: #00d4ff;
-            --success-color: #00ff88;
-            --card-bg: rgba(20, 30, 48, 0.7);
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            
-            /* Fontes */
-            --font-primary: 'Inter', -apple-system, sans-serif;
-            --font-heading: 'Space Grotesk', 'Inter', sans-serif;
-            
-            /* Animações */
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Tema claro */
-        .light-theme {
-            --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            --secondary-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --dark-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            --glass-bg: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(0, 0, 0, 0.05);
-            --text-primary: #1a202c;
-            --text-secondary: rgba(26, 32, 44, 0.85);
-            --text-muted: rgba(26, 32, 44, 0.6);
-            --accent-color: #6a11cb;
-            --success-color: #00b894;
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --shadow-color: rgba(0, 0, 0, 0.08);
-        }
-        
-        /* Base */
-        body {
-            font-family: var(--font-primary);
-            background: var(--dark-gradient);
-            color: var(--text-primary);
-            min-height: 100vh;
-            transition: var(--transition-smooth);
-            overflow-x: hidden;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-        }
-        
-        /* Layout Principal - Vertical para Mobile */
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        /* Header Compacto */
-        .app-header {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            padding: 0 15px;
-            height: 60px;
-            min-height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            flex-shrink: 0;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--primary-gradient);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-        
-        .logo-text h1 {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            font-size: 1.1rem;
-            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1.2;
-        }
-        
-        .logo-text p {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .header-btn {
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        
-        .header-btn:hover {
-            background: var(--primary-gradient);
-            transform: translateY(-1px);
-        }
-        
-        /* Conteúdo Principal - Lista Compacta */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0;
-            position: relative;
-        }
-        
-        /* Barra de Busca Fixa */
-        .search-container {
-            position: sticky;
-            top: 0;
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 15px;
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 90;
-        }
-        
-        .search-input-container {
-            position: relative;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 12px 15px 12px 45px;
-            background: var(--card-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            font-size: 1rem;
-            color: var(--text-primary);
-            transition: var(--transition-smooth);
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
-        }
-        
-        .search-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
-        
-        /* Lista de Palavras Super Compacta */
-        .words-list {
-            padding: 5px 0;
-        }
-        
-        .word-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--glass-border);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 50px;
-        }
-        
-        .word-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        
-        .word-item.active {
-            background: rgba(102, 126, 234, 0.15);
-        }
-        
-        .word-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        
-        .word-emakhua {
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-        
-        .word-portugues {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-        
-        .word-details {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid var(--glass-border);
-            animation: slideDown 0.3s ease;
-        }
-        
-        .word-item.active .word-details {
-            display: block;
-        }
-        
-        .detail-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 8px;
-            font-size: 0.85rem;
-        }
-        
-        .detail-label {
-            color: var(--text-muted);
-            min-width: 80px;
-        }
-        
-        .detail-value {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-        
-        .word-example {
-            font-style: italic;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            padding-top: 8px;
-            border-top: 1px solid var(--glass-border);
-            margin-top: 8px;
-        }
-        
-        /* Modal de Detalhes para Desktop */
-        .word-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .word-modal.active {
-            display: flex;
-        }
-        
-        .modal-content {
-            background: var(--card-bg);
-            border-radius: 16px;
-            max-width: 500px;
-            width: 100%;
-            max-height: 80vh;
-            overflow-y: auto;
-            border: 1px solid var(--glass-border);
-            animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-title {
-            font-family: var(--font-heading);
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: var(--text-primary);
-        }
-        
-        .modal-body {
-            padding: 20px;
-        }
-        
-        .modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid var(--glass-border);
-            text-align: center;
-        }
-        
-        .close-btn {
-            width: 36px;
-            height: 36px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        
-        .close-btn:hover {
-            background: var(--primary-gradient);
-            transform: rotate(90deg);
-        }
-        
-        /* Menu Lateral para Configurações */
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 300px;
-            height: 100%;
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-left: 1px solid var(--glass-border);
-            z-index: 1001;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-        }
-        
-        .side-menu.active {
-            right: 0;
-        }
-        
-        .menu-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .menu-content {
-            padding: 20px;
-        }
-        
-        .menu-section {
-            margin-bottom: 25px;
-        }
-        
-        .menu-title {
-            font-family: var(--font-heading);
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .theme-toggle {
-            display: flex;
-            gap: 8px;
-            background: var(--glass-bg);
-            padding: 4px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-        }
-        
-        .theme-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .theme-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-        }
-        
-        .font-controls {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .font-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            border: 1px solid var(--glass-border);
-            background: var(--glass-bg);
-            color: var(--text-secondary);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-        
-        .font-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-            border-color: transparent;
-        }
-        
-        /* Footer Minimalista */
-        .app-footer {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--glass-border);
-            padding: 12px 15px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            flex-shrink: 0;
-        }
-        
-        .footer-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .footer-author {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-        
-        /* Animações */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(10px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--glass-border);
-            border-radius: 3px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-color);
-        }
-        
-        /* Responsividade */
-        @media (min-width: 768px) {
-            .app-header {
-                padding: 0 25px;
-                height: 70px;
-            }
-            
-            .logo-text h1 {
-                font-size: 1.3rem;
-            }
-            
-            .logo-text p {
-                font-size: 0.8rem;
-            }
-            
-            .header-btn {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .search-container {
-                padding: 20px;
-            }
-            
-            .word-item {
-                padding: 15px 20px;
-            }
-            
-            .word-emakhua {
-                font-size: 1.2rem;
-            }
-        }
-        
-        @media (orientation: landscape) {
-            .app-container {
-                height: 100vh;
-            }
-            
-            .main-content {
-                max-height: calc(100vh - 120px);
-            }
-        }
-        
-        /* Efeitos de fundo */
-        .bg-effects {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        .bg-effect {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.15;
-        }
-        
-        .effect-1 {
-            width: 300px;
-            height: 300px;
-            background: var(--accent-color);
-            top: 10%;
-            left: -150px;
-            animation: float 20s infinite ease-in-out;
-        }
-        
-        .effect-2 {
-            width: 200px;
-            height: 200px;
-            background: #f5576c;
-            bottom: 10%;
-            right: -100px;
-            animation: float 25s infinite ease-in-out reverse;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(50px, 50px) rotate(120deg); }
-            66% { transform: translate(-30px, 100px) rotate(240deg); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dicionário Emakhua-Português</title>
+<!-- Fontes -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* Reset e Variáveis */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+:root {
+  /* Cores principais */
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --dark-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.85);
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --accent-color: #00d4ff;
+  --success-color: #00ff88;
+  --card-bg: rgba(20, 30, 48, 0.7);
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  /* Fontes */
+  --font-primary: 'Inter', -apple-system, sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+  /* Animações */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Tema claro */
+.light-theme {
+  --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  --secondary-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  --dark-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  --glass-bg: rgba(255, 255, 255, 0.95);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --text-primary: #1a202c;
+  --text-secondary: rgba(26, 32, 44, 0.85);
+  --text-muted: rgba(26, 32, 44, 0.6);
+  --accent-color: #6a11cb;
+  --success-color: #00b894;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+/* Base */
+body {
+  font-family: var(--font-primary);
+  background: var(--dark-gradient);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: var(--transition-smooth);
+  overflow-x: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+}
+/* Layout Principal - Vertical para Mobile */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+/* Header Compacto */
+.app-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0 15px;
+  height: 60px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--primary-gradient);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+.logo-text h1 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+.logo-text p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+.header-btn:hover {
+  background: var(--primary-gradient);
+  transform: translateY(-1px);
+}
+/* Conteúdo Principal - Lista Compacta */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  position: relative;
+}
+/* Barra de Busca Fixa */
+.search-container {
+  position: sticky;
+  top: 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 15px;
+  border-bottom: 1px solid var(--glass-border);
+  z-index: 90;
+}
+.search-input-container {
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  background: var(--card-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: var(--transition-smooth);
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.1);
+}
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+/* Lista de Palavras Super Compacta */
+.words-list {
+  padding: 5px 0;
+}
+.word-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 50px;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideIn 0.3s forwards;
+}
+.word-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+.word-item.active {
+  background: rgba(102, 126, 234, 0.15);
+}
+.word-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.word-emakhua {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+.word-portugues {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.word-details {
+  display: none;
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  animation: slideDown 0.3s ease;
+}
+.word-item.active .word-details {
+  display: block;
+}
+.detail-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+.detail-label {
+  color: var(--text-muted);
+  min-width: 80px;
+}
+.detail-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.word-example {
+  font-style: italic;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  padding-top: 8px;
+  border-top: 1px solid var(--glass-border);
+  margin-top: 8px;
+}
+/* Modal de Detalhes para Desktop */
+.word-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+.word-modal.active {
+  display: flex;
+}
+.modal-content {
+  background: var(--card-bg);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1px solid var(--glass-border);
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+}
+.modal-body {
+  padding: 20px;
+}
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid var(--glass-border);
+  text-align: center;
+}
+.close-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+.close-btn:hover {
+  background: var(--primary-gradient);
+  transform: rotate(90deg);
+}
+/* Menu Lateral para Configurações */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100%;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-left: 1px solid var(--glass-border);
+  z-index: 1001;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+.side-menu.active {
+  right: 0;
+}
+.menu-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--glass-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.menu-content {
+  padding: 20px;
+}
+.menu-section {
+  margin-bottom: 25px;
+}
+.menu-title {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.theme-toggle {
+  display: flex;
+  gap: 8px;
+  background: var(--glass-bg);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+}
+.theme-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.theme-btn.active {
+  background: var(--primary-gradient);
+  color: white;
+}
+.font-controls {
+  display: flex;
+  gap: 10px;
+}
+.font-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary);
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+.font-btn.active {
+  background: var(--primary-gradient);
+  color: white;
+  border-color: transparent;
+}
+/* Footer Minimalista */
+.app-footer {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
+  padding: 12px 15px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.footer-author {
+  color: var(--accent-color);
+  font-weight: 600;
+}
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+/* Responsividade */
+@media (min-width: 768px) {
+  .app-header {
+    padding: 0 25px;
+    height: 70px;
+  }
+  .logo-text h1 {
+    font-size: 1.3rem;
+  }
+  .logo-text p {
+    font-size: 0.8rem;
+  }
+  .header-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .search-container {
+    padding: 20px;
+  }
+  .word-item {
+    padding: 15px 20px;
+  }
+  .word-emakhua {
+    font-size: 1.2rem;
+  }
+}
+@media (orientation: landscape) {
+  .app-container {
+    height: 100vh;
+  }
+  .main-content {
+    max-height: calc(100vh - 120px);
+  }
+}
+/* Efeitos de fundo */
+.bg-effects {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+.bg-effect {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.15;
+}
+.effect-1 {
+  width: 300px;
+  height: 300px;
+  background: var(--accent-color);
+  top: 10%;
+  left: -150px;
+  animation: float 20s infinite ease-in-out;
+}
+.effect-2 {
+  width: 200px;
+  height: 200px;
+  background: #f5576c;
+  bottom: 10%;
+  right: -100px;
+  animation: float 25s infinite ease-in-out reverse;
+}
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(50px, 50px) rotate(120deg); }
+  66% { transform: translate(-30px, 100px) rotate(240deg); }
+}
+</style>
 </head>
 <body class="dark-theme">
-    <!-- Efeitos de fundo -->
-    <div class="bg-effects">
-        <div class="bg-effect effect-1"></div>
-        <div class="bg-effect effect-2"></div>
+<!-- Efeitos de fundo -->
+<div class="bg-effects">
+  <div class="bg-effect effect-1"></div>
+  <div class="bg-effect effect-2"></div>
+</div>
+<!-- Container Principal -->
+<div class="app-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <i class="fas fa-book"></i>
+      </div>
+      <div class="logo-text">
+        <h1>Dicionário Emakhua</h1>
+        <p>Português ↔ Emakhua</p>
+      </div>
     </div>
-    
-    <!-- Container Principal -->
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-book"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>Dicionário Emakhua</h1>
-                    <p>Português ↔ Emakhua</p>
-                </div>
-            </div>
-            
-            <div class="header-actions">
-                <button class="header-btn" id="menu-btn" title="Menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </header>
-        
-        <!-- Conteúdo Principal -->
-        <main class="main-content">
-            <!-- Barra de Busca -->
-            <div class="search-container">
-                <div class="search-input-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" 
-                           class="search-input" 
-                           id="search-input"
-                           placeholder="Buscar palavra em Emakhua ou Português..."
-                           autocomplete="off">
-                </div>
-            </div>
-            
-            <!-- Lista de Palavras -->
-            <div class="words-list" id="words-list">
-                <!-- Carregado por JavaScript -->
-            </div>
-        </main>
-        
-        <!-- Footer -->
-        <footer class="app-footer">
-            <div class="footer-content">
-                <div class="footer-copyright">Dicionário Emakhua-Português © 2026</div>
-                <div class="footer-author">By Prof. Nito</div>
-            </div>
-        </footer>
+    <div class="header-actions">
+      <a href="admin.html" class="header-btn" title="Admin">
+        <i class="fas fa-tools"></i>
+      </a>
+      <button class="header-btn" id="menu-btn" title="Menu">
+        <i class="fas fa-bars"></i>
+      </button>
     </div>
-    
-    <!-- Modal de Detalhes (para Desktop) -->
-    <div class="word-modal" id="word-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modal-word">muɾé</h2>
-                <button class="close-btn" id="close-modal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Conteúdo do modal -->
-            </div>
-            <div class="modal-footer">
-                <button class="close-btn" style="width: auto; padding: 8px 20px;" id="close-modal-btn">
-                    Fechar
-                </button>
-            </div>
-        </div>
+  </header>
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <!-- Barra de Busca -->
+    <div class="search-container">
+      <div class="search-input-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text"
+               class="search-input"
+               id="search-input"
+               placeholder="Buscar palavra em Emakhua ou Português..."
+               autocomplete="off">
+      </div>
     </div>
-    
-    <!-- Menu Lateral de Configurações -->
-    <div class="side-menu" id="side-menu">
-        <div class="menu-header">
-            <h2 style="font-family: var(--font-heading); font-size: 1.3rem;">Configurações</h2>
-            <button class="close-btn" id="close-menu">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="menu-content">
-            <div class="menu-section">
-                <div class="menu-title">
-                    <i class="fas fa-palette"></i>
-                    Tema
-                </div>
-                <div class="theme-toggle">
-                    <button class="theme-btn active" data-theme="dark">
-                        <i class="fas fa-moon"></i> Escuro
-                    </button>
-                    <button class="theme-btn" data-theme="light">
-                        <i class="fas fa-sun"></i> Claro
-                    </button>
-                </div>
-            </div>
-            
-            <div class="menu-section">
-                <div class="menu-title">
-                    <i class="fas fa-font"></i>
-                    Tamanho da Fonte
-                </div>
-                <div class="font-controls">
-                    <button class="font-btn" data-size="small">A</button>
-                    <button class="font-btn active" data-size="medium">A</button>
-                    <button class="font-btn" data-size="large">A</button>
-                </div>
-            </div>
-            
-            <div class="menu-section">
-                <div class="menu-title">
-                    <i class="fas fa-star"></i>
-                    Palavra do Dia
-                </div>
-                <div class="word-of-day" style="background: var(--secondary-gradient); padding: 15px; border-radius: 10px;">
-                    <div style="font-size: 1.8rem; font-weight: 700; margin-bottom: 5px;">muɾé</div>
-                    <div style="font-size: 1.1rem; margin-bottom: 10px;">cão, cachorro</div>
-                    <div style="font-size: 0.9rem; opacity: 0.9;">
-                        "Muɾé wa mwene wapɨhɨra" - O cão do dono está latindo
-                    </div>
-                </div>
-            </div>
-            
-            <div class="menu-section">
-                <div class="menu-title">
-                    <i class="fas fa-info-circle"></i>
-                    Sobre
-                </div>
-                <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
-                    Dicionário digital para preservação da língua Emakhua. 
-                    Desenvolvido para facilitar o aprendizado e consulta.
-                </div>
-            </div>
-        </div>
+    <!-- Lista de Palavras -->
+    <div class="words-list" id="words-list">
+      <!-- Carregado por JavaScript -->
     </div>
-    
-    <!-- JavaScript -->
-    <script>
-        // Banco de dados de exemplo
-        const dictionaryWords = [
-            { emakhua: "muɾé", portugues: "cão, cachorro", classe: "substantivo", tom: "HL", exemplo: "Muɾé wa mwene wapɨhɨra - O cão do dono está latindo" },
-            { emakhua: "muthu", portugues: "pessoa, ser humano", classe: "substantivo", tom: "HL", exemplo: "Muthu wa kuwa ni mzuri - Aquela pessoa é boa" },
-            { emakhua: "kulowa", portugues: "comer", classe: "verbo", tom: "LHL", exemplo: "Ana kulowa wali - Ele está comendo arroz" },
-            { emakhua: "muti", portugues: "árvore", classe: "substantivo", tom: "HL", exemplo: "Muti wangu - Minha árvore" },
-            { emakhua: "nyumba", portugues: "casa", classe: "substantivo", tom: "LH", exemplo: "Nyumba yake - Sua casa" },
-            { emakhua: "mazi", portugues: "água", classe: "substantivo", tom: "HL", exemplo: "Mazi mekundwa - Água limpa" },
-            { emakhua: "kupenda", portugues: "amar", classe: "verbo", tom: "LHL", exemplo: "Ninakupenda - Eu te amo" },
-            { emakhua: "mtoto", portugues: "criança", classe: "substantivo", tom: "HL", exemplo: "Mtoto mdogo - Criança pequena" },
-            { emakhua: "jua", portugues: "sol", classe: "substantivo", tom: "HL", exemplo: "Jua linawaka - O sol nasce" },
-            { emakhua: "mwezi", portugues: "lua, mês", classe: "substantivo", tom: "HL", exemplo: "Mwezi mrefu - Lua cheia" },
-            { emakhua: "mchanga", portugues: "areia", classe: "substantivo", tom: "HL", exemplo: "Mchanga mwingi - Muita areia" },
-            { emakhua: "samaki", portugues: "peixe", classe: "substantivo", tom: "LH", exemplo: "Samaki mkubwa - Peixe grande" },
-            { emakhua: "ndege", portugues: "pássaro, avião", classe: "substantivo", tom: "HL", exemplo: "Ndege wa mbinguni - Pássaro no céu" },
-            { emakhua: "moto", portugues: "fogo", classe: "substantivo", tom: "HL", exemplo: "Moto mkali - Fogo forte" },
-            { emakhua: "maji", portugues: "água", classe: "substantivo", tom: "HL", exemplo: "Maji ya kunywa - Água para beber" },
-            { emakhua: "kula", portugues: "comer", classe: "verbo", tom: "HL", exemplo: "Tunakula sasa - Estamos comendo agora" },
-            { emakhua: "kunywa", portugues: "beber", classe: "verbo", tom: "LHL", exemplo: "Anakunywa maji - Ele está bebendo água" },
-            { emakhua: "kulala", portugues: "dormir", classe: "verbo", tom: "LHL", exemplo: "Watoto wanalala - As crianças estão dormindo" },
-            { emakhua: "kuimba", portugues: "cantar", classe: "verbo", tom: "LHL", exemplo: "Wanaimba wimbo - Eles estão cantando uma música" },
-            { emakhua: "kucheza", portugues: "dançar, brincar", classe: "verbo", tom: "LHL", exemplo: "Anacheza na rafiki - Ele está brincando com o amigo" },
-            { emakhua: "mrefu", portugues: "alto, longo", classe: "adjetivo", tom: "HL", exemplo: "Mtu mrefu - Pessoa alta" },
-            { emakhua: "fupi", portugues: "curto, baixo", classe: "adjetivo", tom: "HL", exemplo: "Mti fupi - Árvore baixa" },
-            { emakhua: "kubwa", portugues: "grande", classe: "adjetivo", tom: "HL", exemplo: "Nyumba kubwa - Casa grande" },
-            { emakhua: "dogo", portugues: "pequeno", classe: "adjetivo", tom: "HL", exemplo: "Mtoto mdogo - Criança pequena" },
-            { emakhua: "zuri", portugues: "bonito, bom", classe: "adjetivo", tom: "HL", exemplo: "Siku njema - Bom dia" },
-            { emakhua: "baya", portugues: "ruim, mau", classe: "adjetivo", tom: "HL", exemplo: "Tabia mbaya - Comportamento ruim" },
-            { emakhua: "pya", portugues: "novo", classe: "adjetivo", tom: "HL", exemplo: "Gari jipya - Carro novo" },
-            { emakhua: "kale", portugues: "antigo, velho", classe: "adjetivo", tom: "HL", exemplo: "Kitabu cha kale - Livro antigo" },
-            { emakhua: "nzuri", portugues: "bonito", classe: "adjetivo", tom: "HL", exemplo: "Maua mazuri - Flores bonitas" },
-            { emakhua: "ovu", portugues: "maligno, ruim", classe: "adjetivo", tom: "HL", exemplo: "Nia mbovu - Intenção maligna" }
-        ];
-        
-        // Inicializar aplicação
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('📚 Dicionário Emakhua iniciado');
-            
-            // Carregar palavras
-            loadWords(dictionaryWords);
-            
-            // Configurar eventos
-            setupEventListeners();
-            
-            // Inicializar tema
-            initTheme();
-            
-            // Prevenir zoom em mobile
-            disableZoom();
-        });
-        
-        // Carregar lista de palavras
-        function loadWords(words) {
-            const container = document.getElementById('words-list');
-            container.innerHTML = '';
-            
-            // Ordenar alfabeticamente
-            const sortedWords = [...words].sort((a, b) => 
-                a.emakhua.localeCompare(b.emakhua)
-            );
-            
-            // Criar items
-            sortedWords.forEach(word => {
-                const item = createWordItem(word);
-                container.appendChild(item);
-            });
-        }
-        
-        // Criar item de palavra
-        function createWordItem(word) {
-            const item = document.createElement('div');
-            item.className = 'word-item';
-            item.dataset.word = word.emakhua;
-            
-            item.innerHTML = `
-                <div class="word-main">
-                    <div class="word-emakhua">${word.emakhua}</div>
-                    <div class="word-portugues">${word.portugues}</div>
-                    <div class="word-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Classe:</span>
-                            <span class="detail-value">${word.classe}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Tom:</span>
-                            <span class="detail-value">${word.tom}</span>
-                        </div>
-                        ${word.exemplo ? `
-                            <div class="word-example">
-                                ${word.exemplo}
-                            </div>
-                        ` : ''}
-                    </div>
-                </div>
-            `;
-            
-            // Adicionar evento de clique
-            item.addEventListener('click', function(e) {
-                // Verificar se é mobile ou desktop
-                if (window.innerWidth < 768) {
-                    // Mobile: alternar visibilidade dos detalhes
-                    document.querySelectorAll('.word-item').forEach(w => {
-                        if (w !== this) w.classList.remove('active');
-                    });
-                    this.classList.toggle('active');
-                } else {
-                    // Desktop: abrir modal
-                    showWordModal(word);
-                }
-            });
-            
-            return item;
-        }
-        
-        // Mostrar modal com detalhes (desktop)
-        function showWordModal(word) {
-            const modal = document.getElementById('word-modal');
-            const modalWord = document.getElementById('modal-word');
-            const modalBody = document.getElementById('modal-body');
-            
-            modalWord.textContent = word.emakhua;
-            
-            modalBody.innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 1.4rem; color: var(--text-secondary); margin-bottom: 10px;">
-                        ${word.portugues}
-                    </div>
-                </div>
-                
-                <div style="display: grid; gap: 15px;">
-                    <div style="display: flex; gap: 20px;">
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Classe Gramatical</div>
-                            <div style="font-size: 1.1rem; font-weight: 600; color: var(--accent-color);">
-                                ${word.classe}
-                            </div>
-                        </div>
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px;">Padrão de Tom</div>
-                            <div style="font-size: 1.1rem; font-weight: 600; color: var(--success-color);">
-                                ${word.tom}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    ${word.exemplo ? `
-                        <div>
-                            <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">Exemplo</div>
-                            <div style="background: var(--glass-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--glass-border);">
-                                <div style="font-size: 1.1rem; font-style: italic; margin-bottom: 8px;">
-                                    "${word.exemplo.split(' - ')[0]}"
-                                </div>
-                                <div style="font-size: 1rem; color: var(--text-secondary);">
-                                    ${word.exemplo.split(' - ')[1]}
-                                </div>
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-            
-            modal.classList.add('active');
-        }
-        
-        // Configurar eventos
-        function setupEventListeners() {
-            // Busca
-            const searchInput = document.getElementById('search-input');
-            let searchTimeout;
-            
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                
-                searchTimeout = setTimeout(() => {
-                    const query = this.value.toLowerCase().trim();
-                    
-                    if (!query) {
-                        loadWords(dictionaryWords);
-                        return;
-                    }
-                    
-                    const filtered = dictionaryWords.filter(word => 
-                        word.emakhua.toLowerCase().includes(query) || 
-                        word.portugues.toLowerCase().includes(query)
-                    );
-                    
-                    loadWords(filtered);
-                }, 300);
-            });
-            
-            // Menu
-            document.getElementById('menu-btn').addEventListener('click', function() {
-                document.getElementById('side-menu').classList.add('active');
-            });
-            
-            document.getElementById('close-menu').addEventListener('click', function() {
-                document.getElementById('side-menu').classList.remove('active');
-            });
-            
-            // Modal
-            document.getElementById('close-modal').addEventListener('click', closeModal);
-            document.getElementById('close-modal-btn').addEventListener('click', closeModal);
-            
-            // Fechar modal ao clicar fora
-            document.getElementById('word-modal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-            
-            // Configurações de tema
-            document.querySelectorAll('.theme-btn[data-theme]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.theme-btn[data-theme]').forEach(b => {
-                        b.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    setTheme(this.dataset.theme);
-                });
-            });
-            
-            // Configurações de fonte
-            document.querySelectorAll('.font-btn[data-size]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.font-btn[data-size]').forEach(b => {
-                        b.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    setFontSize(this.dataset.size);
-                });
-            });
-        }
-        
-        // Fechar modal
-        function closeModal() {
-            document.getElementById('word-modal').classList.remove('active');
-        }
-        
-        // Inicializar tema
-        function initTheme() {
-            const savedTheme = localStorage.getItem('dictionary-theme') || 'dark';
-            setTheme(savedTheme);
-            
-            const savedSize = localStorage.getItem('font-size') || 'medium';
-            setFontSize(savedSize);
-        }
-        
-        // Definir tema
-        function setTheme(theme) {
-            document.body.className = `${theme}-theme`;
-            localStorage.setItem('dictionary-theme', theme);
-            
-            // Atualizar botões ativos
-            document.querySelectorAll('.theme-btn[data-theme]').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.theme === theme);
-            });
-        }
-        
-        // Definir tamanho da fonte
-        function setFontSize(size) {
-            const sizes = { small: '14px', medium: '16px', large: '18px' };
-            document.body.style.fontSize = sizes[size];
-            localStorage.setItem('font-size', size);
-            
-            // Atualizar botões ativos
-            document.querySelectorAll('.font-btn[data-size]').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.size === size);
-            });
-        }
-        
-        // Prevenir zoom em mobile
-        function disableZoom() {
-            document.addEventListener('touchstart', function(event) {
-                if (event.touches.length > 1) {
-                    event.preventDefault();
-                }
-            }, { passive: false });
-            
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function(event) {
-                const now = Date.now();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-        }
-        
-        // Fechar detalhes ao rolar (mobile)
-        let scrollTimer;
-        const mainContent = document.querySelector('.main-content');
-        
-        if (mainContent) {
-            mainContent.addEventListener('scroll', function() {
-                clearTimeout(scrollTimer);
-                scrollTimer = setTimeout(function() {
-                    document.querySelectorAll('.word-item.active').forEach(item => {
-                        item.classList.remove('active');
-                    });
-                }, 100);
-            });
-        }
-    </script>
+  </main>
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-copyright">Dicionário Emakhua-Português © 2026</div>
+      <div class="footer-author">By Prof. Nito</div>
+    </div>
+  </footer>
+</div>
+<!-- Modal de Detalhes (para Desktop) -->
+<div class="word-modal" id="word-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-word">muɾé</h2>
+      <button class="close-btn" id="close-modal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- Conteúdo do modal -->
+    </div>
+    <div class="modal-footer">
+      <button class="close-btn" style="width: auto; padding: 8px 20px;" id="close-modal-btn">
+        Fechar
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Menu Lateral de Configurações -->
+<div class="side-menu" id="side-menu">
+  <div class="menu-header">
+    <h2 style="font-family: var(--font-heading); font-size: 1.3rem;">Configurações</h2>
+    <button class="close-btn" id="close-menu">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="menu-content">
+    <div class="menu-section">
+      <div class="menu-title">
+        <i class="fas fa-palette"></i>
+        Tema
+      </div>
+      <div class="theme-toggle">
+        <button class="theme-btn active" data-theme="dark">
+          <i class="fas fa-moon"></i> Escuro
+        </button>
+        <button class="theme-btn" data-theme="light">
+          <i class="fas fa-sun"></i> Claro
+        </button>
+      </div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-title">
+        <i class="fas fa-font"></i>
+        Tamanho da Fonte
+      </div>
+      <div class="font-controls">
+        <button class="font-btn" data-size="small">A</button>
+        <button class="font-btn active" data-size="medium">A</button>
+        <button class="font-btn" data-size="large">A</button>
+      </div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-title">
+        <i class="fas fa-star"></i>
+        Palavra do Dia
+      </div>
+      <div class="word-of-day" style="background: var(--secondary-gradient); padding: 15px; border-radius: 10px;" id="word-of-day">
+        <!-- Preenchido dinamicamente -->
+      </div>
+    </div>
+    <div class="menu-section">
+      <div class="menu-title">
+        <i class="fas fa-info-circle"></i>
+        Sobre
+      </div>
+      <div style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+        Dicionário digital para preservação da língua Emakhua.<br>
+        Desenvolvido para facilitar o aprendizado e consulta.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
+<script src="shared-database.js"></script>
+<script src="sync.js"></script>
 <script>
-// ========== SISTEMA DE BANCO DE DADOS COMPARTILHADO ==========
+// ========== INICIALIZAÇÃO PRINCIPAL ==========
+document.addEventListener('DOMContentLoaded', async () => {
+  console.log('🚀 Inicializando Dicionário com SharedDB...');
+  
+  // Iniciar sincronização
+  window.DBSync.start();
+  
+  // Inicializar banco
+  const ready = await window.SharedDB.init();
+  if (ready) {
+    loadWordsFromDB();
+    setupSearch();
+    initTheme();
+    disableZoom();
+    loadWordOfTheDay();
+  } else {
+    loadFallbackData();
+    initTheme();
+    disableZoom();
+  }
 
-// Função para inicializar o dicionário com dados do banco
-async function initDictionaryWithDatabase() {
-    console.log('📚 Inicializando dicionário com banco de dados...');
-    
-    try {
-        // Inicializar banco compartilhado
-        const dbReady = await SharedDB.init();
-        
-        if (!dbReady) {
-            console.warn('Usando dados locais (fallback)');
-            loadFallbackData();
-            return;
-        }
-        
-        // Carregar palavras do banco
-        const palavras = SharedDB.getAllWords();
-        
-        if (palavras.length === 0) {
-            console.warn('Banco vazio, carregando dados de fallback');
-            loadFallbackData();
-        } else {
-            console.log(`✅ ${palavras.length} palavras carregadas do banco`);
-            displayWordsFromDatabase(palavras);
-            
-            // Atualizar contador
-            updateWordCount(palavras.length);
-        }
-        
-    } catch (error) {
-        console.error('Erro ao carregar banco:', error);
-        loadFallbackData();
-    }
-}
-
-// Exibir palavras do banco de dados
-function displayWordsFromDatabase(palavras) {
-    const container = document.getElementById('words-list');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    // Ordenar alfabeticamente
-    palavras.sort((a, b) => a.emakhua.localeCompare(b.emakhua));
-    
-    // Criar elementos para cada palavra
-    palavras.forEach((palavra, index) => {
-        const item = createWordElement(palavra, index);
-        container.appendChild(item);
-    });
-}
-
-// Criar elemento HTML para uma palavra do banco
-function createWordElement(palavra, index) {
-    const div = document.createElement('div');
-    div.className = 'word-item';
-    div.dataset.id = palavra.id;
-    
-    // Formatar dados
-    const exemplo = palavra.exemplo_emakhua ? 
-        `<div class="word-example">"${palavra.exemplo_emakhua}"</div>` : '';
-    
-    div.innerHTML = `
-        <div class="word-main">
-            <div class="word-emakhua">${escapeHtml(palavra.emakhua)}</div>
-            <div class="word-portugues">${escapeHtml(palavra.portugues)}</div>
-            <div class="word-details">
-                ${palavra.classe_gramatical ? `
-                    <div class="detail-row">
-                        <span class="detail-label">Classe:</span>
-                        <span class="detail-value">${palavra.classe_gramatical}</span>
-                    </div>
-                ` : ''}
-                ${palavra.tom ? `
-                    <div class="detail-row">
-                        <span class="detail-label">Tom:</span>
-                        <span class="detail-value">${palavra.tom}</span>
-                    </div>
-                ` : ''}
-                ${exemplo}
-            </div>
-        </div>
-    `;
-    
-    // Adicionar evento de clique (mobile/desktop)
-    div.addEventListener('click', function(e) {
-        if (window.innerWidth < 768) {
-            // Mobile: toggle details
-            document.querySelectorAll('.word-item').forEach(w => {
-                if (w !== this) w.classList.remove('active');
-            });
-            this.classList.toggle('active');
-        } else {
-            // Desktop: show modal
-            showWordModal(palavra);
-        }
-    });
-    
-    // Animação de entrada
-    setTimeout(() => {
-        div.style.opacity = '1';
-        div.style.transform = 'translateY(0)';
-    }, index * 30);
-    
-    return div;
-}
-
-// Atualizar contador de palavras
-function updateWordCount(count) {
-    const counter = document.getElementById('word-count');
-    if (counter) {
-        counter.textContent = `${count} palavras`;
-    }
-    
-    // Atualizar também nas estatísticas
-    const statsTotal = document.getElementById('total-palavras');
-    if (statsTotal) {
-        statsTotal.textContent = count;
-    }
-}
-
-// Sistema de busca integrado com banco
-function setupDatabaseSearch() {
-    const searchInput = document.getElementById('search-input');
-    if (!searchInput) return;
-    
-    let searchTimeout;
-    
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        
-        const term = this.value.trim();
-        
-        if (!term) {
-            // Se vazio, mostrar todas as palavras
-            const todasPalavras = SharedDB.getAllWords();
-            displayWordsFromDatabase(todasPalavras);
-            updateWordCount(todasPalavras.length);
-            return;
-        }
-        
-        searchTimeout = setTimeout(() => {
-            // Buscar no banco
-            const resultados = SharedDB.searchWords(term, 'em-pt');
-            
-            if (resultados.length === 0) {
-                // Nenhum resultado
-                const container = document.getElementById('words-list');
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
-                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                        <p>Nenhum resultado para "${term}"</p>
-                    </div>
-                `;
-                updateWordCount(0);
-            } else {
-                // Mostrar resultados
-                displayWordsFromDatabase(resultados);
-                updateWordCount(resultados.length);
-                
-                // Atualizar título se houver elemento
-                const title = document.querySelector('.dictionary-title h1');
-                if (title && term) {
-                    const originalTitle = title.dataset.original || 'Dicionário Emakhua';
-                    title.dataset.original = originalTitle;
-                    title.textContent = `Resultados para "${term}"`;
-                }
-            }
-        }, 300);
-    });
-    
-    // Limpar busca com Escape
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            this.value = '';
-            const todasPalavras = SharedDB.getAllWords();
-            displayWordsFromDatabase(todasPalavras);
-            updateWordCount(todasPalavras.length);
-            
-            const title = document.querySelector('.dictionary-title h1');
-            if (title && title.dataset.original) {
-                title.textContent = title.dataset.original;
-            }
-        }
-    });
-}
-
-// Carregar dados de fallback (se banco falhar)
-function loadFallbackData() {
-    const palavrasFallback = [
-        { 
-            id: 1, 
-            emakhua: 'muɾé', 
-            portugues: 'cão, cachorro', 
-            classe_gramatical: 'substantivo', 
-            tom: 'HL',
-            exemplo_emakhua: 'Muɾé wa mwene wapɨhɨra',
-            exemplo_traducao: 'O cão do dono está latindo'
-        },
-        { 
-            id: 2, 
-            emakhua: 'muthu', 
-            portugues: 'pessoa, ser humano', 
-            classe_gramatical: 'substantivo', 
-            tom: 'HL',
-            exemplo_emakhua: 'Muthu wa kuwa ni mzuri',
-            exemplo_traducao: 'Aquela pessoa é boa'
-        },
-        { 
-            id: 3, 
-            emakhua: 'kulowa', 
-            portugues: 'comer', 
-            classe_gramatical: 'verbo', 
-            tom: 'LHL',
-            exemplo_emakhua: 'Ana kulowa wali',
-            exemplo_traducao: 'Ele está comendo arroz'
-        }
-    ];
-    
-    displayWordsFromDatabase(palavrasFallback);
-    updateWordCount(palavrasFallback.length);
-}
-
-// Utilitário para escapar HTML
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-// ========== INICIALIZAÇÃO ==========
-
-// Substituir a inicialização antiga por esta:
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Inicializando Dicionário Emakhua...');
-    
-    // 1. Inicializar banco de dados e carregar palavras
-    initDictionaryWithDatabase();
-    
-    // 2. Configurar sistema de busca
-    setupDatabaseSearch();
-    
-    // 3. Configurar outros eventos (seu código existente)
-    setupEventListeners();
-    
-    // 4. Atualizar estatísticas periodicamente
-    setInterval(() => {
-        if (SharedDB && SharedDB.db) {
-            const stats = SharedDB.getStats();
-            updateStatistics(stats);
-        }
-    }, 30000); // A cada 30 segundos
+  setupEventListeners();
 });
 
-// Função para atualizar estatísticas na UI
-function updateStatistics(stats) {
-    // Atualizar contador total
-    if (stats.total) {
-        updateWordCount(stats.total);
-    }
-    
-    // Atualizar outras estatísticas se houver elementos
-    const statsElements = {
-        'total-palavras': stats.total,
-        'verbs-count': stats.porClasse.find(c => c.classe === 'verbo')?.total || 0,
-        'nouns-count': stats.porClasse.find(c => c.classe === 'substantivo')?.total || 0
-    };
-    
-    for (const [id, value] of Object.entries(statsElements)) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.textContent = value;
-        }
-    }
+// ========== CARREGAR PALAVRAS DO BANCO ==========
+function loadWordsFromDB() {
+  const words = SharedDB.getAllWords();
+  renderWordList(words);
 }
 
-// Sua função setupEventListeners existente (mantenha como está)
+function renderWordList(words) {
+  const container = document.getElementById('words-list');
+  container.innerHTML = '';
+  words.sort((a, b) => a.emakhua.localeCompare(b.emakhua));
+  words.forEach((word, index) => {
+    const item = createWordItem(word);
+    // Animação suave
+    item.style.opacity = '0';
+    item.style.transform = 'translateY(10px)';
+    container.appendChild(item);
+    setTimeout(() => {
+      item.style.transition = 'opacity 0.3s, transform 0.3s';
+      item.style.opacity = '1';
+      item.style.transform = 'translateY(0)';
+    }, index * 30);
+  });
+}
+
+// ========== CRIAR ITEM ==========
+function createWordItem(word) {
+  const item = document.createElement('div');
+  item.className = 'word-item';
+  const exemploHtml = word.exemplo_emakhua ?
+    `<div class="word-example">"${word.exemplo_emakhua}" – ${word.exemplo_traducao || ''}</div>` : '';
+  item.innerHTML = `
+    <div class="word-main">
+      <div class="word-emakhua">${escapeHtml(word.emakhua)}</div>
+      <div class="word-portugues">${escapeHtml(word.portugues)}</div>
+      <div class="word-details">
+        ${word.classe_gramatical ? `<div class="detail-row"><span class="detail-label">Classe:</span><span class="detail-value">${escapeHtml(word.classe_gramatical)}</span></div>` : ''}
+        ${word.tom ? `<div class="detail-row"><span class="detail-label">Tom:</span><span class="detail-value">${escapeHtml(word.tom)}</span></div>` : ''}
+        ${exemploHtml}
+      </div>
+    </div>
+  `;
+  item.addEventListener('click', () => {
+    if (window.innerWidth < 768) {
+      document.querySelectorAll('.word-item').forEach(w => {
+        if (w !== item) w.classList.remove('active');
+      });
+      item.classList.toggle('active');
+    } else {
+      showWordModal(word);
+    }
+  });
+  return item;
+}
+
+// ========== BUSCA ==========
+function setupSearch() {
+  const input = document.getElementById('search-input');
+  let timeout;
+  input.addEventListener('input', () => {
+    clearTimeout(timeout);
+    const term = input.value.trim().toLowerCase();
+    timeout = setTimeout(() => {
+      if (!term) {
+        loadWordsFromDB();
+        return;
+      }
+      const emResults = SharedDB.searchWords(term, 'em-pt');
+      const ptResults = SharedDB.searchWords(term, 'pt-em');
+      const all = [...new Set([...emResults, ...ptResults])];
+      renderWordList(all);
+    }, 300);
+  });
+}
+
+// ========== MODAL ==========
+function showWordModal(word) {
+  const modal = document.getElementById('word-modal');
+  const title = document.getElementById('modal-word');
+  const body = document.getElementById('modal-body');
+  title.textContent = word.emakhua;
+  body.innerHTML = `
+    <div style="margin-bottom:20px;color:var(--text-secondary);font-size:1.4rem;">${escapeHtml(word.portugues)}</div>
+    <div style="display:grid;gap:15px;">
+      ${word.classe_gramatical ? `<div><span style="color:var(--text-muted);">Classe:</span> <strong style="color:var(--accent-color);">${escapeHtml(word.classe_gramatical)}</strong></div>` : ''}
+      ${word.tom ? `<div><span style="color:var(--text-muted);">Tom:</span> <strong style="color:var(--success-color);">${escapeHtml(word.tom)}</strong></div>` : ''}
+      ${word.exemplo_emakhua ? `<div><span style="color:var(--text-muted);">Exemplo:</span><div style="margin-top:8px;background:var(--glass-bg);padding:12px;border-radius:8px;">"${escapeHtml(word.exemplo_emakhua)}"<br><em>${escapeHtml(word.exemplo_traducao || '')}</em></div></div>` : ''}
+    </div>
+  `;
+  modal.classList.add('active');
+}
+
+// ========== PALAVRA DO DIA ==========
+function loadWordOfTheDay() {
+  const words = SharedDB.getAllWords();
+  if (words.length > 0) {
+    const random = words[Math.floor(Math.random() * words.length)];
+    const dayEl = document.getElementById('word-of-day');
+    if (dayEl) {
+      dayEl.innerHTML = `
+        <div style="font-size:1.6rem;font-weight:700;margin-bottom:5px;">${escapeHtml(random.emakhua)}</div>
+        <div style="font-size:1.1rem;margin-bottom:10px;">${escapeHtml(random.portugues)}</div>
+        ${random.exemplo_emakhua ? `<div style="font-size:0.9rem;opacity:0.9;">"${escapeHtml(random.exemplo_emakhua)}" – ${escapeHtml(random.exemplo_traducao || '')}</div>` : ''}
+      `;
+    }
+  }
+}
+
+// ========== FALLBACK (caso banco falhe) ==========
+function loadFallbackData() {
+  const fallback = [
+    { emakhua: 'muɾé', portugues: 'cão', classe_gramatical: 'substantivo', tom: 'HL', exemplo_emakhua: 'Muɾé wa mwene', exemplo_traducao: 'O cão do dono' }
+  ];
+  renderWordList(fallback);
+}
+
+// ========== UTILITÁRIOS ==========
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function disableZoom() {
+  document.addEventListener('touchstart', function(event) {
+    if (event.touches.length > 1) event.preventDefault();
+  }, { passive: false });
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function(event) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) event.preventDefault();
+    lastTouchEnd = now;
+  }, false);
+}
+
+// ========== CONFIGURAÇÕES (tema, fonte, etc.) ==========
+function initTheme() {
+  const saved = localStorage.getItem('dictionary-theme') || 'dark';
+  setTheme(saved);
+  const size = localStorage.getItem('font-size') || 'medium';
+  setFontSize(size);
+}
+
+function setTheme(theme) {
+  document.body.className = `${theme}-theme`;
+  localStorage.setItem('dictionary-theme', theme);
+  document.querySelectorAll('.theme-btn[data-theme]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === theme);
+  });
+}
+
+function setFontSize(size) {
+  const sizes = { small: '14px', medium: '16px', large: '18px' };
+  document.body.style.fontSize = sizes[size];
+  localStorage.setItem('font-size', size);
+  document.querySelectorAll('.font-btn[data-size]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.size === size);
+  });
+}
+
 function setupEventListeners() {
-    // Seu código existente de eventos...
-}
-
-// Sua função showWordModal existente
-function showWordModal(palavra) {
-    // Seu código existente do modal...
-    // Adapte para usar os dados da palavra do banco
+  // Menu
+  document.getElementById('menu-btn').addEventListener('click', () => {
+    document.getElementById('side-menu').classList.add('active');
+  });
+  document.getElementById('close-menu').addEventListener('click', () => {
+    document.getElementById('side-menu').classList.remove('active');
+  });
+  // Modal
+  document.getElementById('close-modal').addEventListener('click', () => {
+    document.getElementById('word-modal').classList.remove('active');
+  });
+  document.getElementById('close-modal-btn').addEventListener('click', () => {
+    document.getElementById('word-modal').classList.remove('active');
+  });
+  document.getElementById('word-modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) e.currentTarget.classList.remove('active');
+  });
+  // Tema
+  document.querySelectorAll('.theme-btn[data-theme]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setTheme(btn.dataset.theme);
+    });
+  });
+  // Fonte
+  document.querySelectorAll('.font-btn[data-size]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setFontSize(btn.dataset.size);
+    });
+  });
+  // Scroll mobile
+  const main = document.querySelector('.main-content');
+  let scrollTimer;
+  if (main) {
+    main.addEventListener('scroll', () => {
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        document.querySelectorAll('.word-item.active').forEach(i => i.classList.remove('active'));
+      }, 100);
+    });
+  }
 }
 </script>
 </body>

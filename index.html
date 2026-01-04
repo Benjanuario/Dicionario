@@ -1068,5 +1068,295 @@
             });
         }
     </script>
+<script>
+// ========== SISTEMA DE BANCO DE DADOS COMPARTILHADO ==========
+
+// Função para inicializar o dicionário com dados do banco
+async function initDictionaryWithDatabase() {
+    console.log('📚 Inicializando dicionário com banco de dados...');
+    
+    try {
+        // Inicializar banco compartilhado
+        const dbReady = await SharedDB.init();
+        
+        if (!dbReady) {
+            console.warn('Usando dados locais (fallback)');
+            loadFallbackData();
+            return;
+        }
+        
+        // Carregar palavras do banco
+        const palavras = SharedDB.getAllWords();
+        
+        if (palavras.length === 0) {
+            console.warn('Banco vazio, carregando dados de fallback');
+            loadFallbackData();
+        } else {
+            console.log(`✅ ${palavras.length} palavras carregadas do banco`);
+            displayWordsFromDatabase(palavras);
+            
+            // Atualizar contador
+            updateWordCount(palavras.length);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar banco:', error);
+        loadFallbackData();
+    }
+}
+
+// Exibir palavras do banco de dados
+function displayWordsFromDatabase(palavras) {
+    const container = document.getElementById('words-list');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Ordenar alfabeticamente
+    palavras.sort((a, b) => a.emakhua.localeCompare(b.emakhua));
+    
+    // Criar elementos para cada palavra
+    palavras.forEach((palavra, index) => {
+        const item = createWordElement(palavra, index);
+        container.appendChild(item);
+    });
+}
+
+// Criar elemento HTML para uma palavra do banco
+function createWordElement(palavra, index) {
+    const div = document.createElement('div');
+    div.className = 'word-item';
+    div.dataset.id = palavra.id;
+    
+    // Formatar dados
+    const exemplo = palavra.exemplo_emakhua ? 
+        `<div class="word-example">"${palavra.exemplo_emakhua}"</div>` : '';
+    
+    div.innerHTML = `
+        <div class="word-main">
+            <div class="word-emakhua">${escapeHtml(palavra.emakhua)}</div>
+            <div class="word-portugues">${escapeHtml(palavra.portugues)}</div>
+            <div class="word-details">
+                ${palavra.classe_gramatical ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Classe:</span>
+                        <span class="detail-value">${palavra.classe_gramatical}</span>
+                    </div>
+                ` : ''}
+                ${palavra.tom ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Tom:</span>
+                        <span class="detail-value">${palavra.tom}</span>
+                    </div>
+                ` : ''}
+                ${exemplo}
+            </div>
+        </div>
+    `;
+    
+    // Adicionar evento de clique (mobile/desktop)
+    div.addEventListener('click', function(e) {
+        if (window.innerWidth < 768) {
+            // Mobile: toggle details
+            document.querySelectorAll('.word-item').forEach(w => {
+                if (w !== this) w.classList.remove('active');
+            });
+            this.classList.toggle('active');
+        } else {
+            // Desktop: show modal
+            showWordModal(palavra);
+        }
+    });
+    
+    // Animação de entrada
+    setTimeout(() => {
+        div.style.opacity = '1';
+        div.style.transform = 'translateY(0)';
+    }, index * 30);
+    
+    return div;
+}
+
+// Atualizar contador de palavras
+function updateWordCount(count) {
+    const counter = document.getElementById('word-count');
+    if (counter) {
+        counter.textContent = `${count} palavras`;
+    }
+    
+    // Atualizar também nas estatísticas
+    const statsTotal = document.getElementById('total-palavras');
+    if (statsTotal) {
+        statsTotal.textContent = count;
+    }
+}
+
+// Sistema de busca integrado com banco
+function setupDatabaseSearch() {
+    const searchInput = document.getElementById('search-input');
+    if (!searchInput) return;
+    
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        
+        const term = this.value.trim();
+        
+        if (!term) {
+            // Se vazio, mostrar todas as palavras
+            const todasPalavras = SharedDB.getAllWords();
+            displayWordsFromDatabase(todasPalavras);
+            updateWordCount(todasPalavras.length);
+            return;
+        }
+        
+        searchTimeout = setTimeout(() => {
+            // Buscar no banco
+            const resultados = SharedDB.searchWords(term, 'em-pt');
+            
+            if (resultados.length === 0) {
+                // Nenhum resultado
+                const container = document.getElementById('words-list');
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: rgba(255,255,255,0.7);">
+                        <i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Nenhum resultado para "${term}"</p>
+                    </div>
+                `;
+                updateWordCount(0);
+            } else {
+                // Mostrar resultados
+                displayWordsFromDatabase(resultados);
+                updateWordCount(resultados.length);
+                
+                // Atualizar título se houver elemento
+                const title = document.querySelector('.dictionary-title h1');
+                if (title && term) {
+                    const originalTitle = title.dataset.original || 'Dicionário Emakhua';
+                    title.dataset.original = originalTitle;
+                    title.textContent = `Resultados para "${term}"`;
+                }
+            }
+        }, 300);
+    });
+    
+    // Limpar busca com Escape
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            this.value = '';
+            const todasPalavras = SharedDB.getAllWords();
+            displayWordsFromDatabase(todasPalavras);
+            updateWordCount(todasPalavras.length);
+            
+            const title = document.querySelector('.dictionary-title h1');
+            if (title && title.dataset.original) {
+                title.textContent = title.dataset.original;
+            }
+        }
+    });
+}
+
+// Carregar dados de fallback (se banco falhar)
+function loadFallbackData() {
+    const palavrasFallback = [
+        { 
+            id: 1, 
+            emakhua: 'muɾé', 
+            portugues: 'cão, cachorro', 
+            classe_gramatical: 'substantivo', 
+            tom: 'HL',
+            exemplo_emakhua: 'Muɾé wa mwene wapɨhɨra',
+            exemplo_traducao: 'O cão do dono está latindo'
+        },
+        { 
+            id: 2, 
+            emakhua: 'muthu', 
+            portugues: 'pessoa, ser humano', 
+            classe_gramatical: 'substantivo', 
+            tom: 'HL',
+            exemplo_emakhua: 'Muthu wa kuwa ni mzuri',
+            exemplo_traducao: 'Aquela pessoa é boa'
+        },
+        { 
+            id: 3, 
+            emakhua: 'kulowa', 
+            portugues: 'comer', 
+            classe_gramatical: 'verbo', 
+            tom: 'LHL',
+            exemplo_emakhua: 'Ana kulowa wali',
+            exemplo_traducao: 'Ele está comendo arroz'
+        }
+    ];
+    
+    displayWordsFromDatabase(palavrasFallback);
+    updateWordCount(palavrasFallback.length);
+}
+
+// Utilitário para escapar HTML
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ========== INICIALIZAÇÃO ==========
+
+// Substituir a inicialização antiga por esta:
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando Dicionário Emakhua...');
+    
+    // 1. Inicializar banco de dados e carregar palavras
+    initDictionaryWithDatabase();
+    
+    // 2. Configurar sistema de busca
+    setupDatabaseSearch();
+    
+    // 3. Configurar outros eventos (seu código existente)
+    setupEventListeners();
+    
+    // 4. Atualizar estatísticas periodicamente
+    setInterval(() => {
+        if (SharedDB && SharedDB.db) {
+            const stats = SharedDB.getStats();
+            updateStatistics(stats);
+        }
+    }, 30000); // A cada 30 segundos
+});
+
+// Função para atualizar estatísticas na UI
+function updateStatistics(stats) {
+    // Atualizar contador total
+    if (stats.total) {
+        updateWordCount(stats.total);
+    }
+    
+    // Atualizar outras estatísticas se houver elementos
+    const statsElements = {
+        'total-palavras': stats.total,
+        'verbs-count': stats.porClasse.find(c => c.classe === 'verbo')?.total || 0,
+        'nouns-count': stats.porClasse.find(c => c.classe === 'substantivo')?.total || 0
+    };
+    
+    for (const [id, value] of Object.entries(statsElements)) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.textContent = value;
+        }
+    }
+}
+
+// Sua função setupEventListeners existente (mantenha como está)
+function setupEventListeners() {
+    // Seu código existente de eventos...
+}
+
+// Sua função showWordModal existente
+function showWordModal(palavra) {
+    // Seu código existente do modal...
+    // Adapte para usar os dados da palavra do banco
+}
+</script>
 </body>
 </html>

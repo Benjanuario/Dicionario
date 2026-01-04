@@ -1060,6 +1060,119 @@
             div.textContent = text;
             return div.innerHTML;
         }
+        // No arquivo index.html, adicione após o seu JavaScript existente:
+
+// Carregar banco de dados
+async function loadDatabase() {
+    try {
+        // Verificar se Database já está carregado
+        if (typeof Database === 'undefined') {
+            // Carregar o arquivo database.js
+            await loadScript('database.js');
+        }
+        
+        // Inicializar banco
+        const success = await Database.init();
+        
+        if (success) {
+            // Carregar palavras do banco
+            const palavras = Database.buscarPalavras({ verificada: 1 });
+            displayWords(palavras);
+        } else {
+            // Usar palavras de fallback
+            console.warn('Usando palavras de fallback');
+            displayWords(fallbackWords);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar banco:', error);
+        displayWords(fallbackWords);
+    }
+}
+
+// Função para carregar script
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+// Função para exibir palavras
+function displayWords(palavras) {
+    const container = document.getElementById('words-list');
+    container.innerHTML = '';
+    
+    palavras.sort((a, b) => a.emakhua.localeCompare(b.emakhua));
+    
+    palavras.forEach((palavra, index) => {
+        const item = createWordItem(palavra, index);
+        container.appendChild(item);
+    });
+}
+
+// Modificar a função createWordItem para usar dados do banco
+function createWordItem(palavra, index) {
+    const item = document.createElement('div');
+    item.className = 'word-item';
+    item.dataset.id = palavra.id;
+    
+    item.innerHTML = `
+        <div class="word-main">
+            <div class="word-emakhua">${palavra.emakhua}</div>
+            <div class="word-portugues">${palavra.portugues}</div>
+            <div class="word-details">
+                <div class="detail-row">
+                    <span class="detail-label">Classe:</span>
+                    <span class="detail-value">${palavra.classe_gramatical || 'Não especificado'}</span>
+                </div>
+                ${palavra.tom ? `
+                    <div class="detail-row">
+                        <span class="detail-label">Tom:</span>
+                        <span class="detail-value">${palavra.tom}</span>
+                    </div>
+                ` : ''}
+                ${palavra.exemplo_emakhua ? `
+                    <div class="word-example">
+                        <strong>Exemplo:</strong> ${palavra.exemplo_emakhua}
+                        ${palavra.exemplo_traducao ? `<br><em>${palavra.exemplo_traducao}</em>` : ''}
+                    </div>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Adicionar evento de clique
+    item.addEventListener('click', function(e) {
+        // Registrar estatística de visualização
+        if (Database && Database.db && palavra.id) {
+            Database.registrarBusca(palavra.id);
+        }
+        
+        // Mostrar/ocultar detalhes (código existente)
+        if (window.innerWidth < 768) {
+            document.querySelectorAll('.word-item').forEach(w => {
+                if (w !== this) w.classList.remove('active');
+            });
+            this.classList.toggle('active');
+        } else {
+            showWordModal(palavra);
+        }
+    });
+    
+    return item;
+}
+
+// Inicializar quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Carregar banco de dados
+    loadDatabase();
+    
+    // Resto do seu código existente...
+});
     </script>
 </body>
 </html>

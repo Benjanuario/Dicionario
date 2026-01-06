@@ -1,560 +1,1323 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Dicionário Emakhua</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário Emakhua-Português | Design Futurista</title>
     
-    :root {
-      --primary: #2c5282;
-      --secondary: #38a169;
-      --danger: #e53e3e;
-      --light: #f7fafc;
-      --dark: #2d3748;
-      --border: #e2e8f0;
-    }
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--light);
-      color: var(--dark);
-      line-height: 1.6;
-    }
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    
-    .panel {
-      display: block;
-    }
-    
-    .header {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      background: white;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    
-    .tab {
-      padding: 10px 20px;
-      border: none;
-      background: var(--light);
-      color: var(--dark);
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .tab.active {
-      background: var(--primary);
-      color: white;
-    }
-    
-    .tab:hover {
-      transform: translateY(-2px);
-    }
-    
-    .content {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    
-    .form-control {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid var(--border);
-      border-radius: 6px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-    
-    .form-control:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-    
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-    
-    .btn-primary:hover {
-      background: #2b6cb0;
-      transform: translateY(-2px);
-    }
-    
-    .btn-success {
-      background: var(--secondary);
-      color: white;
-    }
-    
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-    
-    .btn-block {
-      width: 100%;
-    }
-    
-    .word-list {
-      max-height: 500px;
-      overflow-y: auto;
-      margin-top: 20px;
-    }
-    
-    .word-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px;
-      border-bottom: 1px solid var(--border);
-    }
-    
-    .word-item:hover {
-      background: var(--light);
-    }
-    
-    .word-info {
-      flex: 1;
-    }
-    
-    .word-emakhua {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: var(--primary);
-    }
-    
-    .word-actions {
-      display: flex;
-      gap: 10px;
-    }
-    
-    .message {
-      padding: 15px;
-      border-radius: 6px;
-      margin: 15px 0;
-    }
-    
-    .success {
-      background: #c6f6d5;
-      color: #22543d;
-      border: 1px solid #9ae6b4;
-    }
-    
-    .error {
-      background: #fed7d7;
-      color: #742a2a;
-      border: 1px solid #fc8181;
-    }
-    
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-    
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    
-    @media (max-width: 768px) {
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        padding: 10px;
-      }
-    }
-  </style>
+    <style>
+        /* Reset e Variáveis */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Cores principais - Gradiente futurista */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --dark-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --accent-color: #00d4ff;
+            --success-color: #00ff88;
+            --card-bg: rgba(20, 30, 48, 0.7);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            
+            /* Fontes */
+            --font-primary: 'Inter', -apple-system, sans-serif;
+            --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+            
+            /* Animações */
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.2s ease;
+        }
+        
+        /* Tema claro (alternativo) */
+        .light-theme {
+            --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --secondary-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-primary: #1a202c;
+            --text-secondary: rgba(26, 32, 44, 0.85);
+            --text-muted: rgba(26, 32, 44, 0.6);
+            --accent-color: #6a11cb;
+            --success-color: #00b894;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Base */
+        body {
+            font-family: var(--font-primary);
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: var(--transition-smooth);
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(244, 67, 54, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: pulse 15s ease-in-out infinite alternate;
+        }
+        
+        /* Layout Principal */
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr 400px;
+            grid-template-rows: 80px 1fr;
+            min-height: 100vh;
+            gap: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .app-header {
+            grid-column: 1 / -1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .logo-text h1 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .logo-text p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        
+        /* Sidebar Esquerda - Navegação */
+        .sidebar-nav {
+            grid-row: 2;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 30px 20px;
+            overflow-y: auto;
+            animation: slideInLeft 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-title {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--text-muted) 0%, transparent 100%);
+        }
+        
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 20px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: -1;
+        }
+        
+        .nav-item:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .nav-item i {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .nav-item span {
+            font-weight: 500;
+            font-size: 1rem;
+        }
+        
+        /* Conteúdo Central - Lista de Palavras */
+        .main-content {
+            grid-row: 2;
+            padding: 30px 40px;
+            overflow-y: auto;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .content-header {
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 18px 25px 18px 60px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+        
+        .alphabet-index {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding: 15px 20px;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .letter-link {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition-fast);
+        }
+        
+        .letter-link:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .letter-link.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .words-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .word-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            transition: var(--transition-smooth);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .word-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary-gradient);
+            transform: scaleY(0);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: top;
+        }
+        
+        .word-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px var(--shadow-color);
+        }
+        
+        .word-card:hover::before {
+            transform: scaleY(1);
+        }
+        
+        .word-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .word-letter {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .word-text {
+            flex: 1;
+        }
+        
+        .word-emakhua {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+        
+        .word-portugues {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+        
+        .word-details {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .word-class {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-color);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        /* Sidebar Direita - Detalhes da Palavra */
+        .word-detail-sidebar {
+            grid-row: 2;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            padding: 30px;
+            overflow-y: auto;
+            animation: slideInRight 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .detail-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .close-detail {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .close-detail:hover {
+            background: var(--primary-gradient);
+            transform: rotate(90deg);
+        }
+        
+        .word-of-day {
+            background: var(--secondary-gradient);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.2);
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+        
+        .word-of-day::before {
+            content: '⭐ PALAVRA DO DIA';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .wod-content {
+            margin-top: 30px;
+        }
+        
+        .wod-word {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 2.5rem;
+            color: white;
+            line-height: 1;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .wod-meaning {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+        
+        .wod-example {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            padding-left: 15px;
+            border-left: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Configurações */
+        .settings-panel {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .settings-title {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .settings-group {
+            margin-bottom: 25px;
+        }
+        
+        .settings-label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .theme-toggle {
+            display: flex;
+            gap: 10px;
+            background: var(--glass-bg);
+            padding: 5px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .theme-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .theme-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .font-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-secondary);
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .font-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            transform: scale(1.1);
+        }
+        
+        /* Footer */
+        .app-footer {
+            grid-column: 1 / -1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-copyright {
+            font-weight: 500;
+        }
+        
+        .footer-author {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        /* Animações */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(244, 67, 54, 0.2); }
+            50% { box-shadow: 0 10px 40px rgba(244, 67, 54, 0.4); }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 240px 1fr;
+            }
+            
+            .word-detail-sidebar {
+                display: none;
+            }
+            
+            .word-detail-sidebar.active {
+                display: block;
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 100%;
+                max-width: 500px;
+                height: 100vh;
+                z-index: 1000;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            
+            .sidebar-nav {
+                display: none;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .words-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .alphabet-index {
+                overflow-x: auto;
+                justify-content: flex-start;
+                gap: 10px;
+            }
+            
+            .letter-link {
+                flex-shrink: 0;
+            }
+        }
+        
+        /* Efeitos especiais */
+        .glow-effect {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.1;
+            z-index: -1;
+            animation: moveGlow 20s infinite linear;
+        }
+        
+        @keyframes moveGlow {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100vw, 50vh); }
+            50% { transform: translate(50vw, 100vh); }
+            75% { transform: translate(0, 50vh); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
 </head>
-<body>
-  <div class="panel">
-    <div class="container">
-      <!-- Header -->
-      <div class="header">
-        <h1>📝 Administração do Dicionário</h1>
-        <a href="index.html" class="btn btn-danger">Voltar</a>
-      </div>
-      
-      <!-- Tabs -->
-      <div class="tabs">
-        <button class="tab active" data-tab="add">➕ Adicionar</button>
-        <button class="tab" data-tab="list">📋 Listar</button>
-        <button class="tab" data-tab="export">💾 Exportar</button>
-        <button class="tab" data-tab="import">📤 Importar</button>
-      </div>
-      
-      <!-- Mensagens -->
-      <div id="message" class="message" style="display: none;"></div>
-      
-      <!-- Conteúdo das Tabs -->
-      <div id="addTab" class="content tab-content active">
-        <h2 style="margin-bottom: 20px;">Adicionar Nova Palavra</h2>
-        <div class="form-group">
-          <label for="emakhua">Palavra em Emakhua *</label>
-          <input type="text" id="emakhua" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="portugues">Tradução em Português *</label>
-          <input type="text" id="portugues" class="form-control" required>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="classe">Classe Gramatical</label>
-            <select id="classe" class="form-control">
-              <option value="">Selecione...</option>
-              <option value="substantivo">Substantivo</option>
-              <option value="verbo">Verbo</option>
-              <option value="adjetivo">Adjetivo</option>
-              <option value="advérbio">Advérbio</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="tom">Padrão de Tom</label>
-            <input type="text" id="tom" class="form-control" placeholder="HL, LHL, etc.">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label for="exemplo_emakhua">Exemplo em Emakhua</label>
-            <textarea id="exemplo_emakhua" class="form-control"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="exemplo_traducao">Tradução do Exemplo</label>
-            <textarea id="exemplo_traducao" class="form-control"></textarea>
-          </div>
-        </div>
-        <button class="btn btn-primary" onclick="addWord()">Adicionar Palavra</button>
-      </div>
-      
-      <div id="listTab" class="content tab-content">
-        <h2 style="margin-bottom: 20px;">Palavras Cadastradas</h2>
-        <div class="form-group">
-          <input type="text" 
-                 id="searchInput" 
-                 class="form-control" 
-                 placeholder="Buscar palavra..."
-                 onkeyup="searchWordsList()">
-        </div>
-        <div class="word-list" id="wordList"></div>
-      </div>
-      
-      <div id="exportTab" class="content tab-content">
-        <h2 style="margin-bottom: 20px;">Exportar Dados</h2>
-        <div style="display: grid; gap: 20px;">
-          <div>
-            <h3>Exportar para JSON</h3>
-            <button class="btn btn-success" onclick="exportJSON()">📄 Exportar JSON</button>
-          </div>
-          <div>
-            <h3>Fazer Backup</h3>
-            <button class="btn btn-primary" onclick="backupDatabase()">💾 Fazer Backup</button>
-          </div>
-          <div>
-            <h3>Exportar para CSV</h3>
-            <button class="btn" onclick="exportCSV()">📊 Exportar CSV</button>
-          </div>
-        </div>
-      </div>
-      
-      <div id="importTab" class="content tab-content">
-        <h2 style="margin-bottom: 20px;">Importar Dados</h2>
-        <div style="display: grid; gap: 20px;">
-          <div>
-            <h3>Importar do JSON</h3>
-            <input type="file" id="jsonFile" accept=".json" style="margin-bottom: 10px;">
-            <button class="btn btn-primary" onclick="importJSON()">📤 Importar JSON</button>
-          </div>
-          <div>
-            <h3>Importar Texto</h3>
-            <p style="margin: 10px 0; color: #666;">Formato: emakhua;português;classe;tom</p>
-            <textarea id="importText" class="form-control" rows="6" placeholder="muɾé;cão, cachorro;substantivo;HL"></textarea>
-            <button class="btn" onclick="importText()" style="margin-top: 10px;">📝 Importar Texto</button>
-          </div>
-        </div>
-      </div>
+<body class="dark-theme">
+    <!-- Efeitos de fundo -->
+    <div class="glow-effect" style="top: 20%; left: 10%;"></div>
+    <div class="glow-effect" style="top: 60%; left: 80%; animation-delay: -10s;"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Dicionário Emakhua</h1>
+                    <p>Português ↔ Emakhua</p>
+                </div>
+            </div>
+            
+            <div class="search-container" style="width: 300px;">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Buscar palavra..." id="global-search">
+            </div>
+        </header>
+        
+        <!-- Sidebar Navegação -->
+        <nav class="sidebar-nav">
+            <div class="nav-title">Menu</div>
+            <div class="nav-items">
+                <a href="#" class="nav-item active" data-section="dictionary">
+                    <i class="fas fa-book"></i>
+                    <span>Dicionário</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-section="word-of-day">
+                    <i class="fas fa-star"></i>
+                    <span>Palavra do Dia</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </a>
+            </div>
+            
+            <div class="nav-title" style="margin-top: 40px;">Categorias</div>
+            <div class="nav-items">
+                <a href="#" class="nav-item" data-category="all">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Todas as Palavras</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-category="verbs">
+                    <i class="fas fa-running"></i>
+                    <span>Verbos</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-category="nouns">
+                    <i class="fas fa-font"></i>
+                    <span>Substantivos</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-category="adjectives">
+                    <i class="fas fa-palette"></i>
+                    <span>Adjetivos</span>
+                </a>
+            </div>
+            
+            <!-- Estatísticas -->
+            <div class="settings-panel" style="margin-top: 40px;">
+                <div class="settings-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Estatísticas
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-words">1.247</div>
+                        <div class="stat-label">Palavras</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="verbs-count">382</div>
+                        <div class="stat-label">Verbos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="nouns-count">645</div>
+                        <div class="stat-label">Substantivos</div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 style="font-family: var(--font-heading); font-size: 2.5rem; margin-bottom: 20px; background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    Dicionário
+                </h1>
+                
+                <div class="alphabet-index" id="alphabet-index">
+                    <!-- Gerado por JavaScript -->
+                </div>
+            </div>
+            
+            <div class="words-list" id="words-list">
+                <!-- Palavras carregadas por JavaScript -->
+            </div>
+            
+            <!-- Loading -->
+            <div id="loading" style="text-align: center; padding: 40px; display: none;">
+                <div style="width: 50px; height: 50px; border: 3px solid var(--glass-border); border-top: 3px solid var(--accent-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+                <p style="color: var(--text-muted);">Carregando palavras...</p>
+            </div>
+        </main>
+        
+        <!-- Sidebar Direita - Detalhes/Configurações -->
+        <aside class="word-detail-sidebar" id="detail-sidebar">
+            <div class="detail-header">
+                <h2 class="detail-title">Definição</h2>
+                <button class="close-detail" id="close-detail">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Palavra do Dia -->
+            <div class="word-of-day" id="word-of-day">
+                <div class="wod-content">
+                    <div class="wod-word">muɾé</div>
+                    <div class="wod-meaning">cão, cachorro</div>
+                    <div class="wod-example">"Muɾé wa mwene wapɨhɨra" - O cão do dono está latindo</div>
+                </div>
+            </div>
+            
+            <!-- Configurações -->
+            <div class="settings-panel" id="settings-panel" style="display: none;">
+                <div class="settings-title">
+                    <i class="fas fa-sliders-h"></i>
+                    Configurações
+                </div>
+                
+                <div class="settings-group">
+                    <label class="settings-label">Tema</label>
+                    <div class="theme-toggle">
+                        <button class="theme-btn active" data-theme="dark">
+                            <i class="fas fa-moon"></i> Escuro
+                        </button>
+                        <button class="theme-btn" data-theme="light">
+                            <i class="fas fa-sun"></i> Claro
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <label class="settings-label">Tamanho da Fonte</label>
+                    <div class="font-size-control">
+                        <button class="font-btn" data-size="small">A</button>
+                        <button class="font-btn active" data-size="medium">A</button>
+                        <button class="font-btn" data-size="large">A</button>
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <label class="settings-label">Animations</label>
+                    <div class="theme-toggle">
+                        <button class="theme-btn active" data-animations="on">
+                            <i class="fas fa-play"></i> Ligadas
+                        </button>
+                        <button class="theme-btn" data-animations="off">
+                            <i class="fas fa-pause"></i> Desligadas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <div class="footer-copyright">Dicionário Emakhua-Português © 2026</div>
+                <div class="footer-author">By Prof. Nito</div>
+            </div>
+        </footer>
     </div>
-  </div>
-
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.js"></script>
-  <script src="shared-database.js"></script>
-  <script>
-    // Inicializar ao carregar
-    document.addEventListener('DOMContentLoaded', async () => {
-      const success = await SharedDB.init();
-      if (success) {
-        loadWordList();
-        setupTabs();
-      } else {
-        showMessage('Erro ao carregar banco', 'error');
-      }
-    });
-
-    // Funções de admin
-    function addWord() {
-      const palavra = {
-        emakhua: document.getElementById('emakhua').value.trim(),
-        portugues: document.getElementById('portugues').value.trim(),
-        classe_gramatical: document.getElementById('classe').value || null,
-        tom: document.getElementById('tom').value.trim() || null,
-        exemplo_emakhua: document.getElementById('exemplo_emakhua').value.trim() || null,
-        exemplo_traducao: document.getElementById('exemplo_traducao').value.trim() || null
-      };
-
-      if (!palavra.emakhua || !palavra.portugues) {
-        showMessage('Preencha Emakhua e Português!', 'error');
-        return;
-      }
-
-      const result = SharedDB.addWord(palavra);
-      if (result.success) {
-        document.getElementById('emakhua').value = '';
-        document.getElementById('portugues').value = '';
-        document.getElementById('classe').value = '';
-        document.getElementById('tom').value = '';
-        document.getElementById('exemplo_emakhua').value = '';
-        document.getElementById('exemplo_traducao').value = '';
-        loadWordList();
-        showMessage(`✅ "${palavra.emakhua}" adicionada!`, 'success');
-        dispatchDatabaseUpdate();
-      } else {
-        showMessage(`❌ ${result.error}`, 'error');
-      }
-    }
-
-    function loadWordList() {
-      const palavras = SharedDB.getAllWords();
-      renderWordList(palavras);
-    }
-
-    function searchWordsList() {
-      const term = document.getElementById('searchInput').value.toLowerCase().trim();
-      const allWords = SharedDB.getAllWords();
-      const filtered = term
-        ? allWords.filter(w =>
-            w.emakhua.toLowerCase().includes(term) ||
-            w.portugues.toLowerCase().includes(term)
-          )
-        : allWords;
-      renderWordList(filtered);
-    }
-
-    function renderWordList(words) {
-      const container = document.getElementById('wordList');
-      if (!words || words.length === 0) {
-        container.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Nenhuma palavra cadastrada.</p>';
-        return;
-      }
-      let html = '';
-      words.forEach(p => {
-        html += `
-          <div class="word-item">
-            <div class="word-info">
-              <div class="word-emakhua">${escapeHtml(p.emakhua)}</div>
-              <div>${escapeHtml(p.portugues)}</div>
-              <small>${p.classe_gramatical ? `Classe: ${p.classe_gramatical}` : ''} ${p.tom ? `| Tom: ${p.tom}` : ''}</small>
-            </div>
-            <div class="word-actions">
-              <button class="btn btn-danger" style="padding:5px 10px;font-size:0.9rem;" onclick="deleteWord(${p.id})">Excluir</button>
-            </div>
-          </div>
-        `;
-      });
-      container.innerHTML = html;
-    }
-
-    function deleteWord(id) {
-      if (!confirm('Excluir esta palavra?')) return;
-      SharedDB.db.run('UPDATE palavras SET ativo = 0 WHERE id = ?', [id]);
-      SharedDB.saveToLocalStorage();
-      loadWordList();
-      showMessage('Palavra excluída!', 'success');
-      dispatchDatabaseUpdate();
-    }
-
-    function exportJSON() {
-      const palavras = SharedDB.getAllWords();
-      const data = JSON.stringify({
-        palavras,
-        metadata: { export_date: new Date().toISOString(), total: palavras.length }
-      }, null, 2);
-      downloadFile(data, 'dicionario-emakhua.json', 'application/json');
-      showMessage('✅ JSON exportado!', 'success');
-    }
-
-    function backupDatabase() {
-      const backup = SharedDB.backup();
-      if (backup) {
-        const blob = new Blob([backup.data], { type: 'application/octet-stream' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `emakhua-backup-${new Date().toISOString().split('T')[0]}.sqlite`;
-        a.click();
-        URL.revokeObjectURL(url);
-        showMessage(`✅ Backup salvo (${Math.round(backup.size / 1024)} KB)`, 'success');
-      }
-    }
-
-    function exportCSV() {
-      const palavras = SharedDB.getAllWords();
-      const headers = ['ID','Emakhua','Português','Classe','Tom','Exemplo Emakhua','Tradução Exemplo'];
-      const rows = palavras.map(w => [
-        w.id,
-        `"${w.emakhua}"`,
-        `"${w.portugues}"`,
-        `"${w.classe_gramatical || ''}"`,
-        `"${w.tom || ''}"`,
-        `"${w.exemplo_emakhua || ''}"`,
-        `"${w.exemplo_traducao || ''}"`
-      ]);
-      const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-      downloadFile(csv, 'dicionario-emakhua.csv', 'text/csv');
-      showMessage(`✅ CSV exportado (${palavras.length} palavras)`, 'success');
-    }
-
-    function importJSON() {
-      const file = document.getElementById('jsonFile').files[0];
-      if (!file) { showMessage('Selecione um arquivo', 'error'); return; }
-      if (!confirm('Substituir todos os dados?')) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = JSON.parse(e.target.result);
-          SharedDB.db.run('DELETE FROM palavras');
-          const stmt = SharedDB.db.prepare(`
-            INSERT INTO palavras (emakhua, portugues, classe_gramatical, tom, exemplo_emakhua, exemplo_traducao, verificada)
-            VALUES (?, ?, ?, ?, ?, ?, 1)
-          `);
-          data.palavras.forEach(w => {
-            stmt.run([w.emakhua, w.portugues, w.classe_gramatical, w.tom, w.exemplo_emakhua, w.exemplo_traducao]);
-          });
-          stmt.free();
-          SharedDB.saveToLocalStorage();
-          loadWordList();
-          showMessage('✅ Dados importados!', 'success');
-          dispatchDatabaseUpdate();
-        } catch (err) {
-          showMessage('❌ Erro ao importar JSON', 'error');
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    function importText() {
-      const text = document.getElementById('importText').value.trim();
-      if (!text) return;
-      const lines = text.split('\n');
-      let count = 0;
-      const stmt = SharedDB.db.prepare(`
-        INSERT INTO palavras (emakhua, portugues, classe_gramatical, tom, verificada)
-        VALUES (?, ?, ?, ?, 1)
-      `);
-      lines.forEach(line => {
-        const parts = line.split(';').map(p => p.trim());
-        if (parts.length >= 2) {
-          stmt.run([parts[0], parts[1], parts[2] || null, parts[3] || null]);
-          count++;
-        }
-      });
-      stmt.free();
-      SharedDB.saveToLocalStorage();
-      document.getElementById('importText').value = '';
-      loadWordList();
-      showMessage(`✅ ${count} palavras importadas!`, 'success');
-      dispatchDatabaseUpdate();
-    }
-
-    // Utilitários
-    function setupTabs() {
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          tab.classList.add('active');
-          document.getElementById(tab.dataset.tab + 'Tab').classList.add('active');
+    
+    <!-- JavaScript -->
+    <script>
+        // Banco de dados de exemplo
+        const sampleWords = [
+            { emakhua: "muɾé", portugues: "cão, cachorro", classe: "substantivo", tom: "HL" },
+            { emakhua: "muthu", portugues: "pessoa, ser humano", classe: "substantivo", tom: "HL" },
+            { emakhua: "kulowa", portugues: "comer", classe: "verbo", tom: "LHL" },
+            { emakhua: "muti", portugues: "árvore", classe: "substantivo", tom: "HL" },
+            { emakhua: "nyumba", portugues: "casa", classe: "substantivo", tom: "LH" },
+            { emakhua: "mazi", portugues: "água", classe: "substantivo", tom: "HL" },
+            { emakhua: "kupenda", portugues: "amar", classe: "verbo", tom: "LHL" },
+            { emakhua: "mtoto", portugues: "criança", classe: "substantivo", tom: "HL" },
+            { emakhua: "jua", portugues: "sol", classe: "substantivo", tom: "HL" },
+            { emakhua: "mwezi", portugues: "lua, mês", classe: "substantivo", tom: "HL" },
+            { emakhua: "mchanga", portugues: "areia", classe: "substantivo", tom: "HL" },
+            { emakhua: "samaki", portugues: "peixe", classe: "substantivo", tom: "LH" },
+            { emakhua: "ndege", portugues: "pássaro, avião", classe: "substantivo", tom: "HL" },
+            { emakhua: "moto", portugues: "fogo", classe: "substantivo", tom: "HL" },
+            { emakhua: "maji", portugues: "água", classe: "substantivo", tom: "HL" },
+            { emakhua: "kula", portugues: "comer", classe: "verbo", tom: "HL" },
+            { emakhua: "kunywa", portugues: "beber", classe: "verbo", tom: "LHL" },
+            { emakhua: "kulala", portugues: "dormir", classe: "verbo", tom: "LHL" },
+            { emakhua: "kuimba", portugues: "cantar", classe: "verbo", tom: "LHL" },
+            { emakhua: "kucheza", portugues: "dançar, brincar", classe: "verbo", tom: "LHL" },
+            { emakhua: "mrefu", portugues: "alto, longo", classe: "adjetivo", tom: "HL" },
+            { emakhua: "fupi", portugues: "curto, baixo", classe: "adjetivo", tom: "HL" },
+            { emakhua: "kubwa", portugues: "grande", classe: "adjetivo", tom: "HL" },
+            { emakhua: "dogo", portugues: "pequeno", classe: "adjetivo", tom: "HL" },
+            { emakhua: "zuri", portugues: "bonito, bom", classe: "adjetivo", tom: "HL" }
+        ];
+        
+        // Inicializar aplicação
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Dicionário Emakhua carregado');
+            
+            // Gerar índice alfabético
+            generateAlphabetIndex();
+            
+            // Carregar palavras
+            loadWords();
+            
+            // Configurar eventos
+            setupEventListeners();
+            
+            // Inicializar tema
+            initTheme();
         });
-      });
-    }
-
-    function showMessage(text, type) {
-      const el = document.getElementById('message');
-      el.textContent = text;
-      el.className = `message ${type}`;
-      el.style.display = 'block';
-      setTimeout(() => el.style.display = 'none', 5000);
-    }
-
-    function dispatchDatabaseUpdate() {
-      localStorage.setItem('db_last_update', new Date().toISOString());
-      window.dispatchEvent(new CustomEvent('databaseUpdated'));
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function downloadFile(content, filename, type) {
-      const blob = new Blob([content], { type });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  </script>
+        
+        // Gerar índice alfabético
+        function generateAlphabetIndex() {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            const container = document.getElementById('alphabet-index');
+            
+            alphabet.forEach(letter => {
+                const link = document.createElement('a');
+                link.className = 'letter-link';
+                link.href = '#';
+                link.textContent = letter;
+                link.dataset.letter = letter;
+                
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    filterByLetter(letter);
+                });
+                
+                container.appendChild(link);
+            });
+        }
+        
+        // Carregar palavras
+        function loadWords(filter = 'all') {
+            const container = document.getElementById('words-list');
+            const loading = document.getElementById('loading');
+            
+            // Mostrar loading
+            container.innerHTML = '';
+            loading.style.display = 'block';
+            
+            // Simular carregamento assíncrono
+            setTimeout(() => {
+                // Filtrar palavras
+                let filteredWords = [...sampleWords];
+                
+                if (filter !== 'all') {
+                    filteredWords = sampleWords.filter(word => 
+                        word.classe === filter || 
+                        word.emakhua.toLowerCase().startsWith(filter.toLowerCase())
+                    );
+                }
+                
+                // Ordenar alfabeticamente
+                filteredWords.sort((a, b) => a.emakhua.localeCompare(b.emakhua));
+                
+                // Gerar cards
+                container.innerHTML = '';
+                filteredWords.forEach((word, index) => {
+                    const card = createWordCard(word, index);
+                    container.appendChild(card);
+                });
+                
+                // Esconder loading
+                loading.style.display = 'none';
+                
+                // Atualizar estatísticas
+                updateStats(filteredWords.length);
+                
+            }, 500);
+        }
+        
+        // Criar card de palavra
+        function createWordCard(word, index) {
+            const card = document.createElement('div');
+            card.className = 'word-card';
+            card.dataset.word = word.emakhua;
+            
+            // Primeira letra
+            const firstLetter = word.emakhua.charAt(0).toUpperCase();
+            
+            card.innerHTML = `
+                <div class="word-header">
+                    <div class="word-letter">${firstLetter}</div>
+                    <div class="word-text">
+                        <div class="word-emakhua">${word.emakhua}</div>
+                        <div class="word-portugues">${word.portugues}</div>
+                    </div>
+                </div>
+                <div class="word-details">
+                    <span class="word-class">${word.classe}</span>
+                    ${word.tom ? `<span>Tom: ${word.tom}</span>` : ''}
+                </div>
+            `;
+            
+            // Adicionar evento de clique
+            card.addEventListener('click', () => showWordDetail(word));
+            
+            // Animação de entrada
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 50);
+            
+            return card;
+        }
+        
+        // Filtrar por letra
+        function filterByLetter(letter) {
+            // Atualizar links ativos
+            document.querySelectorAll('.letter-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`.letter-link[data-letter="${letter}"]`).classList.add('active');
+            
+            // Filtrar palavras
+            const filteredWords = sampleWords.filter(word => 
+                word.emakhua.toLowerCase().startsWith(letter.toLowerCase())
+            );
+            
+            const container = document.getElementById('words-list');
+            container.innerHTML = '';
+            
+            filteredWords.forEach((word, index) => {
+                const card = createWordCard(word, index);
+                container.appendChild(card);
+            });
+            
+            updateStats(filteredWords.length);
+        }
+        
+        // Mostrar detalhes da palavra
+        function showWordDetail(word) {
+            const sidebar = document.getElementById('detail-sidebar');
+            const wodSection = document.getElementById('word-of-day');
+            
+            // Atualizar conteúdo
+            wodSection.innerHTML = `
+                <div class="wod-content">
+                    <div class="wod-word">${word.emakhua}</div>
+                    <div class="wod-meaning">${word.portugues}</div>
+                    <div class="word-class" style="display: inline-block; margin: 10px 0;">${word.classe}</div>
+                    ${word.tom ? `<div style="margin: 10px 0; font-size: 0.9rem;">Tom: <strong>${word.tom}</strong></div>` : ''}
+                    <div class="wod-example">Exemplo: "${word.emakhua} wa mwene" - Tradução do exemplo</div>
+                </div>
+            `;
+            
+            // Mostrar sidebar em mobile
+            if (window.innerWidth <= 1200) {
+                sidebar.classList.add('active');
+            }
+        }
+        
+        // Atualizar estatísticas
+        function updateStats(count) {
+            document.getElementById('total-words').textContent = count.toLocaleString();
+            
+            // Estatísticas por classe
+            const verbs = sampleWords.filter(w => w.classe === 'verbo').length;
+            const nouns = sampleWords.filter(w => w.classe === 'substantivo').length;
+            
+            document.getElementById('verbs-count').textContent = verbs;
+            document.getElementById('nouns-count').textContent = nouns;
+        }
+        
+        // Inicializar tema
+        function initTheme() {
+            const savedTheme = localStorage.getItem('dictionary-theme') || 'dark';
+            setTheme(savedTheme);
+            
+            const savedSize = localStorage.getItem('font-size') || 'medium';
+            setFontSize(savedSize);
+        }
+        
+        // Configurar eventos
+        function setupEventListeners() {
+            // Navegação principal
+            document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Atualizar ativo
+                    document.querySelectorAll('.nav-item').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Mostrar seção correspondente
+                    const section = this.dataset.section;
+                    
+                    if (section === 'word-of-day' || section === 'settings') {
+                        document.getElementById('detail-sidebar').classList.add('active');
+                        
+                        if (section === 'word-of-day') {
+                            document.getElementById('word-of-day').style.display = 'block';
+                            document.getElementById('settings-panel').style.display = 'none';
+                        } else {
+                            document.getElementById('word-of-day').style.display = 'none';
+                            document.getElementById('settings-panel').style.display = 'block';
+                        }
+                    }
+                });
+            });
+            
+            // Navegação por categoria
+            document.querySelectorAll('.nav-item[data-category]').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Atualizar ativo
+                    document.querySelectorAll('.nav-item[data-category]').forEach(nav => {
+                        nav.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Filtrar palavras
+                    const category = this.dataset.category;
+                    loadWords(category);
+                });
+            });
+            
+            // Busca global
+            const searchInput = document.getElementById('global-search');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                
+                searchTimeout = setTimeout(() => {
+                    const query = this.value.toLowerCase().trim();
+                    
+                    if (!query) {
+                        loadWords('all');
+                        return;
+                    }
+                    
+                    const filtered = sampleWords.filter(word => 
+                        word.emakhua.toLowerCase().includes(query) || 
+                        word.portugues.toLowerCase().includes(query)
+                    );
+                    
+                    const container = document.getElementById('words-list');
+                    container.innerHTML = '';
+                    
+                    filtered.forEach((word, index) => {
+                        const card = createWordCard(word, index);
+                        container.appendChild(card);
+                    });
+                    
+                    updateStats(filtered.length);
+                }, 300);
+            });
+            
+            // Fechar detalhes
+            document.getElementById('close-detail').addEventListener('click', function() {
+                document.getElementById('detail-sidebar').classList.remove('active');
+            });
+            
+            // Controles de tema
+            document.querySelectorAll('.theme-btn[data-theme]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-btn[data-theme]').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    setTheme(this.dataset.theme);
+                });
+            });
+            
+            // Controles de fonte
+            document.querySelectorAll('.font-btn[data-size]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.font-btn[data-size]').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    setFontSize(this.dataset.size);
+                });
+            });
+            
+            // Controles de animação
+            document.querySelectorAll('.theme-btn[data-animations]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-btn[data-animations]').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    const animations = this.dataset.animations;
+                    document.body.style.setProperty('--transition-smooth', 
+                        animations === 'on' ? 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' : 'none');
+                });
+            });
+        }
+        
+        // Definir tema
+        function setTheme(theme) {
+            document.body.className = `${theme}-theme`;
+            localStorage.setItem('dictionary-theme', theme);
+        }
+        
+        // Definir tamanho da fonte
+        function setFontSize(size) {
+            const sizes = { small: '14px', medium: '16px', large: '18px' };
+            document.body.style.fontSize = sizes[size];
+            localStorage.setItem('font-size', size);
+        }
+        
+        // Animação de loading
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            .word-card {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>

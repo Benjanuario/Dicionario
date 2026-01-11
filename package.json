@@ -1,0 +1,21 @@
+{
+  "name": "dicionario-emakhua-database",
+  "version": "1.0.0",
+  "description": "Sistema de banco de dados para o Dicionário Emakhua",
+  "main": "convert-json-to-sqlite.js",
+  "scripts": {
+    "convert": "node convert-json-to-sqlite.js",
+    "create-db": "node convert-json-to-sqlite.js dicionario_original.json data/dicionario.db",
+    "optimize": "node scripts/optimize-db.js",
+    "stats": "node scripts/get-stats.js",
+    "backup": "node scripts/backup-db.js",
+    "test": "node scripts/test-queries.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.0.0"
+  },
+  "devDependencies": {},
+  "keywords": ["emakhua", "dicionario", "sqlite", "linguistica"],
+  "author": "Prof. Nito",
+  "license": "MIT"
+}

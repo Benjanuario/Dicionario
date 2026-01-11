@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dicionário Emakhua | Inteligente & Único</title>
+    
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SQLite WASM -->
+    <script src="./js/sqlite-wasm.js"></script>
+    
+    <style>
+        /* ============================================
+           CSS ORIGINAL ATUALIZADO
+           (MANTIDO EXATAMENTE IGUAL)
+        ============================================ */
+        
+        /* Reset e Variáveis */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Cores principais - Gradiente futurista */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --dark-gradient: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --accent-color: #00d4ff;
+            --success-color: #00ff88;
+            --card-bg: rgba(20, 30, 48, 0.7);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            
+            /* Fontes */
+            --font-primary: 'Inter', -apple-system, sans-serif;
+            --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+            
+            /* Animações */
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 0.2s ease;
+            
+            /* Tamanho de fonte base - controlável pelo usuário */
+            --font-size-base: 16px;
+        }
+        
+        /* Tema claro (alternativo) */
+        .light-theme {
+            --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --secondary-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --dark-gradient: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --text-primary: #1a202c;
+            --text-secondary: rgba(26, 32, 44, 0.85);
+            --text-muted: rgba(26, 32, 44, 0.6);
+            --accent-color: #6a11cb;
+            --success-color: #00b894;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Aplicar tamanho de fonte base */
+        body {
+            font-family: var(--font-primary);
+            background: var(--dark-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: var(--transition-smooth);
+            overflow-x: hidden;
+            position: relative;
+            font-size: var(--font-size-base);
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(244, 67, 54, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: pulse 15s ease-in-out infinite alternate;
+        }
+        
+        /* ============================================
+           LAYOUT RESPONSIVO MELHORADO
+           (funciona bem em vertical e horizontal)
+        ============================================ */
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            grid-template-rows: auto auto 1fr auto;
+            min-height: 100vh;
+            gap: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .app-header {
+            grid-column: 1 / -1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 70px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* ============================================
+           FRISO DE VARIANTES MELHORADO
+           (oculto por padrão, abre ao clicar)
+        ============================================ */
+        
+        .variants-container {
+            grid-column: 1 / -1;
+            position: relative;
+            z-index: 999;
+        }
+        
+        .variant-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .variant-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .variant-toggle i {
+            transition: transform 0.3s ease;
+        }
+        
+        .variant-toggle.active i {
+            transform: rotate(180deg);
+        }
+        
+        .variants-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 15px 20px;
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 998;
+        }
+        
+        .variants-dropdown.active {
+            display: grid;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .variant-option {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .variant-option:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .variant-option.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* ============================================
+           SIDEBAR COM CATEGORIAS EXPANSÍVEIS
+        ============================================ */
+        
+        .sidebar-nav {
+            grid-row: 3;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            padding: 20px;
+            overflow-y: auto;
+            animation: slideInLeft 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-title {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .nav-title i {
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-title.active i {
+            transform: rotate(180deg);
+        }
+        
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 25px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            transition: var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.95rem;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: -1;
+        }
+        
+        .nav-item:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Submenu de categorias */
+        .submenu {
+            display: none;
+            margin-left: 20px;
+            margin-top: 10px;
+            border-left: 2px solid var(--glass-border);
+            padding-left: 15px;
+        }
+        
+        .submenu.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .submenu-item {
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            transition: var(--transition-fast);
+            font-size: 0.9rem;
+        }
+        
+        .submenu-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-color);
+        }
+        
+        /* ============================================
+           CONTEÚDO PRINCIPAL COMPACTO
+           (mais palavras por tela)
+        ============================================ */
+        
+        .main-content {
+            grid-row: 3;
+            padding: 20px;
+            overflow-y: auto;
+            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .content-header {
+            margin-bottom: 25px;
+        }
+        
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto 20px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            transition: var(--transition-smooth);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+        
+        /* ============================================
+           LISTA DE PALAVRAS COMPACTA
+           (máximo de palavras por tela)
+        ============================================ */
+        
+        .words-list-compact {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        
+        .word-card-compact {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            transition: var(--transition-fast);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .word-card-compact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow-color);
+            border-color: var(--accent-color);
+        }
+        
+        .word-card-compact.active {
+            border-color: var(--accent-color);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        .word-header-compact {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .word-letter-compact {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            background: var(--primary-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .word-text-compact {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .word-emakhua-compact {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+        
+        .word-class-compact {
+            display: inline-block;
+            padding: 3px 8px;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-color);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        .word-details-compact {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .word-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .word-detail-item i {
+            font-size: 0.7rem;
+        }
+        
+        /* ============================================
+           PAINEL DE DETALHES (MODAL)
+           (só aparece ao clicar)
+        ============================================ */
+        
+        .word-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .word-detail-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .modal-close:hover {
+            background: var(--primary-gradient);
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 25px 30px;
+        }
+        
+        /* ============================================
+           ESTILOS PARA GÊNERO E NÚMERO
+        ============================================ */
+        
+        .gender-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .gender-masculino {
+            background: rgba(66, 153, 225, 0.15);
+            color: #4299e1;
+        }
+        
+        .gender-femenino {
+            background: rgba(236, 72, 153, 0.15);
+            color: #ec4899;
+        }
+        
+        .number-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        .number-singular {
+            background: rgba(72, 187, 120, 0.15);
+            color: #48bb78;
+        }
+        
+        .number-plural {
+            background: rgba(246, 173, 85, 0.15);
+            color: #f6ad55;
+        }
+        
+        /* ============================================
+           SIGNIFICADOS E EXEMPLOS
+        ============================================ */
+        
+        .meaning-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .meaning-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .meaning-number {
+            width: 28px;
+            height: 28px;
+            background: var(--secondary-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .meaning-definition {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        
+        .examples-grid {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .example-card {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .example-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .example-text {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+        }
+        
+        .example-emakhua {
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+        
+        /* ============================================
+           CONFIGURAÇÕES NO SIDEBAR
+        ============================================ */
+        
+        .settings-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+        
+        .font-size-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .font-size-slider {
+            flex: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--glass-bg);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .font-size-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 212, 255, 0.4);
+        }
+        
+        .font-size-value {
+            min-width: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        /* ============================================
+           RESPONSIVIDADE MELHORADA
+        ============================================ */
+        
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto 1fr auto;
+            }
+            
+            .sidebar-nav {
+                grid-row: 4;
+                display: none;
+            }
+            
+            .sidebar-nav.active {
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1001;
+            }
+            
+            .main-content {
+                grid-row: 4;
+            }
+            
+            .words-list-compact {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .app-header {
+                padding: 0 20px;
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .words-list-compact {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .variants-dropdown {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .modal-content {
+                max-height: 85vh;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .word-card-compact {
+                padding: 12px;
+            }
+            
+            .modal-header,
+            .modal-body {
+                padding: 20px;
+            }
+        }
+        
+        /* ============================================
+           ANIMAÇÕES
+        ============================================ */
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Efeitos especiais */
+        .glow-effect {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-color) 0%, transparent 70%);
+            filter: blur(40px);
+            opacity: 0.1;
+            z-index: -1;
+            animation: moveGlow 20s infinite linear;
+        }
+        
+        @keyframes moveGlow {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100vw, 50vh); }
+            50% { transform: translate(50vw, 100vh); }
+            75% { transform: translate(0, 50vh); }
+            100% { transform: translate(0, 0); }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+        
+        /* Loading */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--glass-border);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Menu mobile toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1002;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        @media (max-width: 1024px) {
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <!-- Efeitos de fundo -->
+    <div class="glow-effect" style="top: 20%; left: 10%;"></div>
+    <div class="glow-effect" style="top: 60%; left: 80%; animation-delay: -10s;"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-brain"></i> <!-- Ícone de inteligência -->
+                </div>
+                <div class="logo-text">
+                    <h1>Dicionário Emakhua</h1>
+                    <p>Inteligente & Único</p>
+                </div>
+            </div>
+            
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Buscar palavra Emakhua..." id="global-search">
+            </div>
+            
+            <!-- Indicador de status do banco -->
+            <div id="db-status" style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted);">
+                <i class="fas fa-database"></i>
+                <span id="db-status-text">Iniciando...</span>
+            </div>
+        </header>
+        
+        <!-- ============================================
+             FRISO DE VARIANTES (OCULTO POR PADRÃO)
+        ============================================ -->
+        <div class="variants-container">
+            <div class="variant-toggle" id="variant-toggle">
+                <span id="current-variant-display">Todas as Variantes</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <div class="variants-dropdown" id="variants-dropdown">
+                <div class="variant-option active" data-variant="all">
+                    <i class="fas fa-globe-africa"></i>
+                    Todas as Variantes
+                    <span style="font-size: 0.8rem; opacity: 0.7;" id="count-all">(0)</span>
+                </div>
+                
+                <!-- Variantes carregadas do banco -->
+            </div>
+        </div>
+        
+        <!-- Sidebar Navegação -->
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <div class="nav-title" id="categories-toggle">
+                <span>Navegação</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <div class="nav-items" id="main-nav">
+                <a href="#" class="nav-item active" data-section="dictionary">
+                    <i class="fas fa-book"></i>
+                    <span>Dicionário</span>
+                </a>
+                
+                <a href="#" class="nav-item" id="categories-main">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Categorias</span>
+                    <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 0.8rem;"></i>
+                </a>
+                
+                <!-- Submenu de Categorias (carregado do banco) -->
+                <div class="submenu" id="categories-submenu">
+                    <a href="#" class="submenu-item active" data-category="all">
+                        <i class="fas fa-th-large"></i>
+                        Todas as Palavras
+                    </a>
+                    <!-- Categorias carregadas aqui -->
+                </div>
+                
+                <a href="#" class="nav-item" data-section="estatisticas">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Estatísticas</span>
+                </a>
+                
+                <a href="#" class="nav-item" data-section="sobre">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Sobre</span>
+                </a>
+            </div>
+            
+            <!-- ============================================
+                 CONFIGURAÇÕES NO SIDEBAR
+            ============================================ -->
+            <div class="settings-section">
+                <div class="nav-title">Configurações</div>
+                
+                <div class="nav-items">
+                    <!-- Tema -->
+                    <div class="nav-item" style="cursor: pointer;" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                        <span>Tema: Escuro</span>
+                    </div>
+                    
+                    <!-- Tamanho da Fonte -->
+                    <div class="nav-item" style="cursor: default;">
+                        <i class="fas fa-text-height"></i>
+                        <span>Tamanho da Letra</span>
+                    </div>
+                    
+                    <div class="font-size-control">
+                        <small>A</small>
+                        <input type="range" min="12" max="24" value="16" class="font-size-slider" id="font-size-slider">
+                        <big>A</big>
+                        <span class="font-size-value" id="font-size-value">16px</span>
+                    </div>
+                    
+                    <!-- Cache -->
+                    <div class="nav-item" style="cursor: pointer;" id="clear-cache">
+                        <i class="fas fa-trash-alt"></i>
+                        <span>Limpar Cache</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estatísticas -->
+            <div class="settings-section">
+                <div class="nav-title">Estatísticas</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--accent-color);" id="stat-total">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Palavras</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; font-weight: 700; color: var(--success-color);" id="stat-variants">0</div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Variantes</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 10px; font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+                    Banco: <span id="db-size">0 MB</span>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="content-header">
+                <h1 style="font-family: var(--font-heading); font-size: 1.8rem; margin-bottom: 15px; 
+                          background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%); 
+                          -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    <span id="current-variant-title">Todas as Variantes</span>
+                    <span style="font-size: 1rem; color: var(--text-muted); margin-left: 10px;">
+                        (<span id="word-count">0</span> palavras)
+                    </span>
+                </h1>
+                
+                <!-- Índice alfabético rápido -->
+                <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 20px;">
+                    <span style="font-size: 0.9rem; color: var(--text-muted); margin-right: 10px;">Índice:</span>
+                    <div style="display: flex; flex-wrap: wrap; gap: 3px;" id="alphabet-index">
+                        <!-- Gerado por JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lista Compacta de Palavras -->
+            <div class="words-list-compact" id="words-list">
+                <!-- Carregado dinamicamente do SQLite -->
+            </div>
+            
+            <!-- Loading -->
+            <div id="loading" style="text-align: center; padding: 40px;">
+                <div class="loading-spinner"></div>
+                <p style="color: var(--text-muted); margin-top: 10px;">Inicializando banco de dados...</p>
+                <p id="db-progress" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;"></p>
+            </div>
+            
+            <!-- Sem resultados -->
+            <div id="no-results" style="display: none; text-align: center; padding: 60px; color: var(--text-muted); grid-column: 1 / -1;">
+                <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                <p style="font-size: 1.1rem;">Nenhuma palavra encontrada</p>
+            </div>
+            
+            <!-- Botão Carregar Mais -->
+            <div id="load-more-container" style="text-align: center; margin: 30px 0; display: none;">
+                <button id="load-more-btn" style="padding: 12px 24px; background: var(--primary-gradient); 
+                        border: none; border-radius: 10px; color: white; font-weight: 600; 
+                        cursor: pointer; transition: var(--transition-fast); font-size: 0.9rem;">
+                    <i class="fas fa-plus-circle"></i> Carregar Mais Palavras
+                </button>
+            </div>
+        </main>
+        
+        <!-- ============================================
+             MODAL DE DETALHES (SÓ APARECE AO CLICAR)
+        ============================================ -->
+        <div class="word-detail-modal" id="word-detail-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 style="font-family: var(--font-heading); font-size: 1.8rem; 
+                              background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%); 
+                              -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"
+                        id="modal-word-title">
+                        Carregando...
+                    </h2>
+                    <button class="modal-close" id="modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-body" id="modal-word-content">
+                    <!-- Preenchido dinamicamente do SQLite -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Estatísticas -->
+        <div class="word-detail-modal" id="stats-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 style="font-family: var(--font-heading); font-size: 1.8rem; 
+                              background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%); 
+                              -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        Estatísticas do Dicionário
+                    </h2>
+                    <button class="modal-close" data-modal="stats">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="modal-body" id="stats-content">
+                    <!-- Preenchido dinamicamente -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="app-footer" style="grid-column: 1 / -1; padding: 15px 20px; text-align: center; 
+                background: var(--glass-bg); border-top: 1px solid var(--glass-border); font-size: 0.85rem;">
+            <div class="footer-content">
+                <div class="footer-copyright">Dicionário Emakhua Inteligente © 2026</div>
+                <div class="footer-author">By Prof. Nito | Preservação Linguística</div>
+                <div style="margin-top: 5px; color: var(--text-muted); font-size: 0.8rem;">
+                    <i class="fas fa-wifi-slash"></i> Funciona totalmente offline |
+                    <span id="db-version-info">Banco: v1.0.0</span>
+                </div>
+            </div>
+        </footer>
+        
+        <!-- Botão Menu Mobile -->
+        <button class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <!-- ============================================
+         JAVASCRIPT REAL COM SQLite
+         (Substitui completamente o código anterior)
+    ============================================ -->
+    <script>
+        // ============================================
+        // CONFIGURAÇÕES GLOBAIS
+        // ============================================
+        
+        const CONFIG = {
+            DATABASE_FILE: './data/dicionario.db',
+            WASM_FILE: './wasm/sql-wasm.wasm',
+            CACHE_NAME: 'emakhua-db-cache',
+            CACHE_VERSION: 'v1.0',
+            ITEMS_PER_PAGE: 40,
+            MAX_SEARCH_RESULTS: 100
+        };
+        
+        // ============================================
+        // ESTADO DA APLICAÇÃO
+        // ============================================
+        
+        let appState = {
+            database: null,
+            sqlite3: null,
+            currentVariant: 'all',
+            currentCategory: 'all',
+            currentPage: 0,
+            currentSearch: '',
+            totalWords: 0,
+            isLoading: false,
+            variants: [],
+            categories: []
+        };
+        
+        // ============================================
+        // INICIALIZAÇÃO DO SISTEMA
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Inicializando Dicionário Emakhua com SQLite...');
+            
+            // 1. Configurar interface
+            setupInterface();
+            
+            // 2. Inicializar banco de dados
+            await initializeDatabase();
+            
+            // 3. Carregar dados iniciais
+            await loadInitialData();
+            
+            // 4. Configurar eventos
+            setupEventListeners();
+            
+            console.log('✅ Sistema inicializado com sucesso!');
+        });
+        
+        // ============================================
+        // SISTEMA DE BANCO DE DADOS SQLite
+        // ============================================
+        
+        async function initializeDatabase() {
+            try {
+                updateStatus('Inicializando SQLite...');
+                
+                // Carregar SQLite WASM
+                appState.sqlite3 = await sqlite3InitModule({
+                    print: console.log,
+                    printErr: console.error
+                });
+                
+                updateStatus('Carregando banco de dados...');
+                
+                // Carregar arquivo .db
+                const dbResponse = await fetch(CONFIG.DATABASE_FILE);
+                const dbBuffer = await dbResponse.arrayBuffer();
+                
+                updateStatus('Abrindo banco...');
+                
+                // Criar banco em memória
+                appState.database = new appState.sqlite3.oo1.DB();
+                
+                // Carregar dados do buffer
+                const u8 = new Uint8Array(dbBuffer);
+                appState.database.deserialize(u8);
+                
+                // Configurar pragmas para performance
+                appState.database.exec(`
+                    PRAGMA journal_mode = WAL;
+                    PRAGMA synchronous = NORMAL;
+                    PRAGMA cache_size = -10000;
+                    PRAGMA foreign_keys = ON;
+                `);
+                
+                updateStatus('✅ Banco carregado');
+                document.getElementById('loading').style.display = 'none';
+                
+                // Mostrar tamanho do banco
+                const sizeMB = (u8.length / 1024 / 1024).toFixed(2);
+                document.getElementById('db-size').textContent = `${sizeMB} MB`;
+                
+            } catch (error) {
+                console.error('❌ Erro ao inicializar banco:', error);
+                updateStatus('❌ Erro ao carregar banco');
+                
+                // Fallback: mostrar erro
+                document.getElementById('loading').innerHTML = `
+                    <div style="color: #f56565; text-align: center;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 15px;"></i>
+                        <p>Erro ao carregar banco de dados</p>
+                        <p style="font-size: 0.9rem;">${error.message}</p>
+                        <button onclick="location.reload()" style="margin-top: 15px; padding: 10px 20px; 
+                                background: var(--primary-gradient); border: none; border-radius: 8px; 
+                                color: white; cursor: pointer;">
+                            Tentar novamente
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        function updateStatus(message) {
+            const statusElement = document.getElementById('db-status-text');
+            const progressElement = document.getElementById('db-progress');
+            
+            if (statusElement) statusElement.textContent = message;
+            if (progressElement) progressElement.textContent = message;
+            
+            console.log(`📊 ${message}`);
+        }
+        
+        // ============================================
+        // CONSULTAS AO BANCO DE DADOS
+        // ============================================
+        
+        function executeQuery(sql, params = []) {
+            if (!appState.database) {
+                throw new Error('Banco de dados não inicializado');
+            }
+            
+            try {
+                const stmt = appState.database.prepare(sql);
+                const result = params.length > 0 ? stmt.all(...params) : stmt.all();
+                stmt.free();
+                return result;
+            } catch (error) {
+                console.error('Erro na query:', error, sql, params);
+                throw error;
+            }
+        }
+        
+        function executeSingle(sql, params = []) {
+            const results = executeQuery(sql, params);
+            return results.length > 0 ? results[0] : null;
+        }
+        
+        // ============================================
+        // CARREGAMENTO DE DADOS INICIAIS
+        // ============================================
+        
+        async function loadInitialData() {
+            if (!appState.database) return;
+            
+            try {
+                // Carregar variantes
+                const variants = executeQuery(`
+                    SELECT codigo, nome, cor_hex, 
+                           (SELECT COUNT(DISTINCT palavra_id) 
+                            FROM palavra_variantes 
+                            WHERE variante_id = v.id) as contagem
+                    FROM variantes 
+                    WHERE ativo = 1 
+                    ORDER BY ordem
+                `);
+                
+                appState.variants = variants;
+                loadVariantsMenu(variants);
+                
+                // Carregar categorias
+                const categories = executeQuery(`
+                    SELECT nome, cor, icone, 
+                           (SELECT COUNT(*) 
+                            FROM palavras 
+                            WHERE categoria = c.nome AND ativo = 1) as contagem
+                    FROM categorias 
+                    WHERE ativo = 1 
+                    ORDER BY ordem
+                `);
+                
+                appState.categories = categories;
+                loadCategoriesMenu(categories);
+                
+                // Estatísticas gerais
+                const stats = executeSingle(`
+                    SELECT 
+                        COUNT(*) as total_palavras,
+                        (SELECT COUNT(*) FROM variantes WHERE ativo = 1) as total_variantes,
+                        (SELECT COUNT(*) FROM categorias WHERE ativo = 1) as total_categorias,
+                        (SELECT valor FROM configuracoes WHERE chave = 'versao_banco') as versao_banco
+                    FROM palavras 
+                    WHERE ativo = 1
+                `);
+                
+                appState.totalWords = stats.total_palavras;
+                
+                // Atualizar UI
+                document.getElementById('stat-total').textContent = stats.total_palavras;
+                document.getElementById('stat-variants').textContent = stats.total_variantes;
+                document.getElementById('word-count').textContent = stats.total_palavras;
+                document.getElementById('db-version-info').textContent = `Banco: ${stats.versao_banco}`;
+                
+                // Atualizar contagem das variantes
+                variants.forEach(variant => {
+                    const countElement = document.getElementById(`count-${variant.codigo}`);
+                    if (countElement) {
+                        countElement.textContent = `(${variant.contagem})`;
+                    }
+                });
+                
+                // Carregar palavras iniciais
+                loadWords();
+                
+                // Inicializar índice alfabético
+                initializeAlphabetIndex();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados iniciais:', error);
+            }
+        }
+        
+        // ============================================
+        // FUNÇÕES DE CARREGAMENTO DE PALAVRAS
+        // ============================================
+        
+        function loadWords(reset = true) {
+            if (!appState.database) return;
+            
+            if (reset) {
+                appState.currentPage = 0;
+                document.getElementById('words-list').innerHTML = '';
+                document.getElementById('load-more-container').style.display = 'none';
+                document.getElementById('no-results').style.display = 'none';
+            }
+            
+            const start = appState.currentPage * CONFIG.ITEMS_PER_PAGE;
+            
+            try {
+                // Construir query base
+                let sql = `
+                    SELECT 
+                        p.id,
+                        p.palavra_emakhua,
+                        p.classe_gramatical,
+                        p.categoria,
+                        p.genero,
+                        p.numero,
+                        p.frequencia,
+                        GROUP_CONCAT(DISTINCT v.codigo) as variantes_codigos,
+                        COUNT(DISTINCT s.id) as significados_count
+                    FROM palavras p
+                    LEFT JOIN palavra_variantes pv ON p.id = pv.palavra_id
+                    LEFT JOIN variantes v ON pv.variante_id = v.id AND v.codigo != 'all'
+                    LEFT JOIN significados s ON p.id = s.palavra_id
+                    WHERE p.ativo = 1
+                `;
+                
+                const params = [];
+                
+                // Filtro por variante
+                if (appState.currentVariant !== 'all') {
+                    sql += ` AND p.id IN (
+                        SELECT palavra_id FROM palavra_variantes pv2
+                        JOIN variantes v2 ON pv2.variante_id = v2.id
+                        WHERE v2.codigo = ?
+                    )`;
+                    params.push(appState.currentVariant);
+                }
+                
+                // Filtro por categoria
+                if (appState.currentCategory !== 'all') {
+                    sql += ` AND p.categoria = ?`;
+                    params.push(appState.currentCategory);
+                }
+                
+                // Filtro por busca
+                if (appState.currentSearch) {
+                    sql += ` AND (
+                        p.palavra_emakhua LIKE ? 
+                        OR p.id IN (
+                            SELECT palavra_id FROM significados 
+                            WHERE definicao_emakhua LIKE ?
+                        )
+                    )`;
+                    const searchTerm = `%${appState.currentSearch}%`;
+                    params.push(searchTerm, searchTerm);
+                }
+                
+                // Agrupamento e ordenação
+                sql += ` 
+                    GROUP BY p.id
+                    ORDER BY p.frequencia DESC, p.palavra_emakhua
+                    LIMIT ? OFFSET ?
+                `;
+                
+                params.push(CONFIG.ITEMS_PER_PAGE, start);
+                
+                const words = executeQuery(sql, params);
+                
+                if (words.length === 0) {
+                    if (reset) {
+                        document.getElementById('no-results').style.display = 'block';
+                    }
+                    document.getElementById('load-more-container').style.display = 'none';
+                } else {
+                    renderWords(words, start);
+                    
+                    // Verificar se há mais resultados
+                    if (words.length === CONFIG.ITEMS_PER_PAGE) {
+                        document.getElementById('load-more-container').style.display = 'block';
+                    } else {
+                        document.getElementById('load-more-container').style.display = 'none';
+                    }
+                    
+                    document.getElementById('no-results').style.display = 'none';
+                }
+                
+                // Atualizar contador
+                updateWordCount();
+                
+            } catch (error) {
+                console.error('Erro ao carregar palavras:', error);
+            }
+        }
+        
+        function renderWords(words, startIndex) {
+            const container = document.getElementById('words-list');
+            
+            words.forEach((word, index) => {
+                const wordIndex = startIndex + index;
+                const card = createWordCard(word, wordIndex);
+                container.appendChild(card);
+                
+                // Animação de entrada
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 20);
+            });
+        }
+        
+        function createWordCard(word, index) {
+            const card = document.createElement('div');
+            card.className = 'word-card-compact';
+            card.dataset.id = word.id;
+            
+            // Gênero e número
+            let generoHtml = '';
+            if (word.genero && word.genero !== 'invariável') {
+                const generoClass = word.genero === 'masculino' ? 'gender-masculino' : 'gender-femenino';
+                generoHtml = `<span class="gender-badge ${generoClass}">${word.genero.charAt(0).toUpperCase()}</span>`;
+            }
+            
+            let numeroHtml = '';
+            if (word.numero && word.numero !== 'invariável') {
+                const numeroClass = word.numero === 'singular' ? 'number-singular' : 'number-plural';
+                numeroHtml = `<span class="number-badge ${numeroClass}">${word.numero.charAt(0).toUpperCase()}</span>`;
+            }
+            
+            // Variantes
+            const variantsCount = word.variantes_codigos ? word.variantes_codigos.split(',').length : 0;
+            
+            card.innerHTML = `
+                <div class="word-header-compact">
+                    <div class="word-letter-compact">${word.palavra_emakhua.charAt(0).toUpperCase()}</div>
+                    <div class="word-text-compact">
+                        <div class="word-emakhua-compact">
+                            ${word.palavra_emakhua}
+                            ${generoHtml}
+                            ${numeroHtml}
+                        </div>
+                        <div>
+                            <span class="word-class-compact">${word.classe_gramatical}</span>
+                            ${word.frequencia ? `<span style="font-size: 0.75rem; color: var(--text-muted);">• ${word.frequencia}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                ${variantsCount > 0 ? `
+                <div class="word-details-compact">
+                    <div class="word-detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${variantsCount} variante${variantsCount > 1 ? 's' : ''}</span>
+                    </div>
+                    ${word.categoria ? `
+                    <div class="word-detail-item">
+                        <i class="fas fa-tag"></i>
+                        <span>${word.categoria}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                ` : ''}
+            `;
+            
+            // Animação inicial
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(10px)';
+            card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            
+            // Evento de clique
+            card.addEventListener('click', () => showWordDetails(word.id));
+            
+            return card;
+        }
+        
+        // ============================================
+        // DETALHES DA PALAVRA
+        // ============================================
+        
+        async function showWordDetails(wordId) {
+            if (!appState.database) return;
+            
+            try {
+                // Obter palavra principal
+                const palavra = executeSingle(`
+                    SELECT * FROM palavras WHERE id = ? AND ativo = 1
+                `, [wordId]);
+                
+                if (!palavra) return;
+                
+                // Obter variantes
+                const variantes = executeQuery(`
+                    SELECT v.*, pv.pronuncia, pv.tom, pv.plural
+                    FROM palavra_variantes pv
+                    JOIN variantes v ON pv.variante_id = v.id
+                    WHERE pv.palavra_id = ? AND v.codigo != 'all'
+                `, [wordId]);
+                
+                // Obter significados com exemplos
+                const significados = executeQuery(`
+                    SELECT s.*, 
+                           GROUP_CONCAT(
+                               json_object(
+                                   'tipo', e.tipo,
+                                   'texto', e.texto,
+                                   'traducao', e.traducao
+                               )
+                           ) as exemplos_json
+                    FROM significados s
+                    LEFT JOIN exemplos e ON s.id = e.significado_id
+                    WHERE s.palavra_id = ?
+                    GROUP BY s.id
+                    ORDER BY s.ordem
+                `, [wordId]);
+                
+                // Processar exemplos
+                significados.forEach(s => {
+                    if (s.exemplos_json) {
+                        try {
+                            s.exemplos = JSON.parse(`[${s.exemplos_json}]`);
+                        } catch (e) {
+                            s.exemplos = [];
+                        }
+                    } else {
+                        s.exemplos = [];
+                    }
+                    delete s.exemplos_json;
+                });
+                
+                // Renderizar modal
+                renderWordModal(palavra, variantes, significados);
+                
+                // Mostrar modal
+                document.getElementById('word-detail-modal').classList.add('active');
+                
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+            }
+        }
+        
+        function renderWordModal(palavra, variantes, significados) {
+            const title = document.getElementById('modal-word-title');
+            const content = document.getElementById('modal-word-content');
+            
+            title.textContent = palavra.palavra_emakhua;
+            
+            let html = `
+                <div style="margin-bottom: 25px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 15px;">
+                        <span class="word-class-compact" style="font-size: 0.9rem;">${palavra.classe_gramatical}</span>
+                        
+                        ${palavra.genero && palavra.genero !== 'invariável' ? `
+                        <span class="gender-badge ${palavra.genero === 'masculino' ? 'gender-masculino' : 'gender-femenino'}" style="font-size: 0.8rem;">
+                            Gênero: ${palavra.genero}
+                        </span>
+                        ` : ''}
+                        
+                        ${palavra.numero && palavra.numero !== 'invariável' ? `
+                        <span class="number-badge ${palavra.numero === 'singular' ? 'number-singular' : 'number-plural'}" style="font-size: 0.8rem;">
+                            Número: ${palavra.numero}
+                        </span>
+                        ` : ''}
+                        
+                        ${palavra.frequencia ? `
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">
+                            <i class="fas fa-chart-line"></i> ${palavra.frequencia}
+                        </span>
+                        ` : ''}
+                    </div>
+                    
+                    ${palavra.categoria ? `
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-size: 0.9rem; color: var(--text-muted);">
+                            <i class="fas fa-tag"></i> Categoria: ${palavra.categoria}
+                        </span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            // Variantes
+            if (variantes.length > 0) {
+                html += `
+                    <div style="margin-bottom: 25px;">
+                        <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 10px;">
+                            <i class="fas fa-map-marker-alt"></i> Disponível em:
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${variantes.map(v => `
+                                <span class="variant-option" style="font-size: 0.8rem; padding: 6px 12px;">
+                                    ${v.nome}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Significados
+            if (significados.length > 0) {
+                html += significados.map((significado, index) => {
+                    let significadoHtml = `
+                        <div class="meaning-section">
+                            <div class="meaning-header">
+                                <div class="meaning-number">${index + 1}</div>
+                                ${significado.contexto ? `
+                                    <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); 
+                                           padding: 4px 8px; border-radius: 6px;">
+                                        ${significado.contexto}
+                                    </span>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="meaning-definition">
+                                ${significado.definicao_emakhua}
+                            </div>
+                    `;
+                    
+                    // Exemplos
+                    if (significado.exemplos && significado.exemplos.length > 0) {
+                        significadoHtml += `
+                            <div class="examples-grid">
+                                ${significado.exemplos.map(example => {
+                                    if (!example.texto) return '';
+                                    
+                                    return `
+                                        <div class="example-card">
+                                            <div class="example-title">
+                                                <i class="fas fa-comment-dots"></i>
+                                                ${example.tipo === 'emakhua' ? 'Exemplo em Emakhua' : 'Exemplo em Português'}
+                                            </div>
+                                            <div class="example-text ${example.tipo === 'emakhua' ? 'example-emakhua' : ''}">
+                                                "${example.texto}"
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    // Notas
+                    if (significado.notas) {
+                        significadoHtml += `
+                            <div style="margin-top: 15px; padding: 10px; background: rgba(0, 212, 255, 0.05); border-radius: 8px;">
+                                <div style="font-size: 0.85rem; color: var(--accent-color); margin-bottom: 5px;">
+                                    <i class="fas fa-sticky-note"></i> Notas
+                                </div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                                    ${significado.notas}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    significadoHtml += `</div>`;
+                    return significadoHtml;
+                }).join('');
+            }
+            
+            content.innerHTML = html;
+        }
+        
+        // ============================================
+        // INTERFACE E MENUS
+        // ============================================
+        
+        function loadVariantsMenu(variants) {
+            const dropdown = document.getElementById('variants-dropdown');
+            const allOption = dropdown.querySelector('.variant-option[data-variant="all"]');
+            
+            // Limpar variantes existentes (exceto "Todas")
+            const existingVariants = dropdown.querySelectorAll('.variant-option:not([data-variant="all"])');
+            existingVariants.forEach(el => el.remove());
+            
+            // Adicionar variantes do banco
+            variants.forEach(variant => {
+                if (variant.codigo === 'all') return;
+                
+                const option = document.createElement('div');
+                option.className = 'variant-option';
+                option.dataset.variant = variant.codigo;
+                option.innerHTML = `
+                    <i class="fas fa-map-marker-alt"></i>
+                    ${variant.nome}
+                    <span style="font-size: 0.8rem; opacity: 0.7;" id="count-${variant.codigo}">(${variant.contagem})</span>
+                `;
+                
+                // Inserir após a opção "Todas"
+                allOption.parentNode.insertBefore(option, allOption.nextSibling);
+            });
+            
+            // Atualizar contagem de "Todas"
+            const totalWords = variants.reduce((sum, v) => sum + (v.contagem || 0), 0);
+            document.getElementById('count-all').textContent = `(${totalWords})`;
+        }
+        
+        function loadCategoriesMenu(categories) {
+            const submenu = document.getElementById('categories-submenu');
+            
+            // Adicionar categorias do banco
+            categories.forEach(category => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'submenu-item';
+                item.dataset.category = category.nome;
+                item.innerHTML = `
+                    <i class="fas ${category.icone || 'fa-tag'}"></i>
+                    ${category.nome}
+                    <span style="font-size: 0.75rem; opacity: 0.7; margin-left: auto;">(${category.contagem})</span>
+                `;
+                
+                submenu.appendChild(item);
+            });
+        }
+        
+        function initializeAlphabetIndex() {
+            const container = document.getElementById('alphabet-index');
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            
+            alphabet.forEach(letter => {
+                const link = document.createElement('span');
+                link.style.cssText = 'padding: 3px 8px; border-radius: 4px; background: var(--glass-bg); ' +
+                                   'color: var(--text-secondary); cursor: pointer; font-size: 0.85rem; ' +
+                                   'transition: var(--transition-fast);';
+                link.textContent = letter;
+                link.title = `Palavras começando com ${letter}`;
+                
+                link.addEventListener('click', () => filterByLetter(letter));
+                
+                container.appendChild(link);
+            });
+        }
+        
+        // ============================================
+        // FUNÇÕES DE FILTRO
+        // ============================================
+        
+        function filterByVariant(variant) {
+            appState.currentVariant = variant;
+            appState.currentPage = 0;
+            
+            // Atualizar UI
+            document.querySelectorAll('.variant-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            document.querySelector(`.variant-option[data-variant="${variant}"]`).classList.add('active');
+            
+            const variantName = appState.variants.find(v => v.codigo === variant)?.nome || variant;
+            document.getElementById('current-variant-display').textContent = variantName;
+            document.getElementById('current-variant-title').textContent = variantName;
+            
+            // Fechar dropdown
+            document.getElementById('variant-toggle').classList.remove('active');
+            document.getElementById('variants-dropdown').classList.remove('active');
+            
+            // Recarregar palavras
+            loadWords(true);
+        }
+        
+        function filterByCategory(category) {
+            appState.currentCategory = category;
+            appState.currentPage = 0;
+            
+            // Atualizar UI
+            document.querySelectorAll('.submenu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.submenu-item[data-category="${category}"]`).classList.add('active');
+            
+            // Recarregar palavras
+            loadWords(true);
+        }
+        
+        function filterByLetter(letter) {
+            appState.currentSearch = '';
+            appState.currentPage = 0;
+            
+            // Limpar busca anterior
+            document.getElementById('global-search').value = '';
+            
+            // Carregar palavras começando com a letra
+            if (!appState.database) return;
+            
+            try {
+                let sql = `
+                    SELECT 
+                        p.id,
+                        p.palavra_emakhua,
+                        p.classe_gramatical,
+                        p.categoria,
+                        p.genero,
+                        p.numero,
+                        p.frequencia,
+                        GROUP_CONCAT(DISTINCT v.codigo) as variantes_codigos,
+                        COUNT(DISTINCT s.id) as significados_count
+                    FROM palavras p
+                    LEFT JOIN palavra_variantes pv ON p.id = pv.palavra_id
+                    LEFT JOIN variantes v ON pv.variante_id = v.id AND v.codigo != 'all'
+                    LEFT JOIN significados s ON p.id = s.palavra_id
+                    WHERE p.ativo = 1
+                    AND UPPER(p.palavra_emakhua) LIKE ?
+                `;
+                
+                const params = [];
+                params.push(`${letter.toUpperCase()}%`);
+                
+                // Filtro por variante
+                if (appState.currentVariant !== 'all') {
+                    sql += ` AND p.id IN (
+                        SELECT palavra_id FROM palavra_variantes pv2
+                        JOIN variantes v2 ON pv2.variante_id = v2.id
+                        WHERE v2.codigo = ?
+                    )`;
+                    params.push(appState.currentVariant);
+                }
+                
+                // Filtro por categoria
+                if (appState.currentCategory !== 'all') {
+                    sql += ` AND p.categoria = ?`;
+                    params.push(appState.currentCategory);
+                }
+                
+                sql += ` 
+                    GROUP BY p.id
+                    ORDER BY p.palavra_emakhua
+                    LIMIT ?
+                `;
+                
+                params.push(CONFIG.ITEMS_PER_PAGE);
+                
+                const words = executeQuery(sql, params);
+                
+                const container = document.getElementById('words-list');
+                container.innerHTML = '';
+                
+                if (words.length === 0) {
+                    document.getElementById('no-results').style.display = 'block';
+                    document.getElementById('no-results').innerHTML = `
+                        <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <p style="font-size: 1.1rem;">Nenhuma palavra começando com "${letter}"</p>
+                    `;
+                } else {
+                    renderWords(words, 0);
+                }
+                
+                document.getElementById('load-more-container').style.display = 'none';
+                updateWordCount();
+                
+            } catch (error) {
+                console.error('Erro ao filtrar por letra:', error);
+            }
+        }
+        
+        // ============================================
+        // FUNÇÕES AUXILIARES
+        // ============================================
+        
+        function updateWordCount() {
+            if (!appState.database) return;
+            
+            try {
+                let sql = `SELECT COUNT(*) as total FROM palavras WHERE ativo = 1`;
+                const params = [];
+                
+                if (appState.currentVariant !== 'all') {
+                    sql += ` AND id IN (
+                        SELECT palavra_id FROM palavra_variantes pv
+                        JOIN variantes v ON pv.variante_id = v.id
+                        WHERE v.codigo = ?
+                    )`;
+                    params.push(appState.currentVariant);
+                }
+                
+                if (appState.currentCategory !== 'all') {
+                    sql += ` AND categoria = ?`;
+                    params.push(appState.currentCategory);
+                }
+                
+                if (appState.currentSearch) {
+                    sql += ` AND (
+                        palavra_emakhua LIKE ? 
+                        OR id IN (
+                            SELECT palavra_id FROM significados 
+                            WHERE definicao_emakhua LIKE ?
+                        )
+                    )`;
+                    const searchTerm = `%${appState.currentSearch}%`;
+                    params.push(searchTerm, searchTerm);
+                }
+                
+                const result = executeSingle(sql, params);
+                document.getElementById('word-count').textContent = result.total;
+                
+            } catch (error) {
+                console.error('Erro ao contar palavras:', error);
+            }
+        }
+        
+        function setupInterface() {
+            // Configurações salvas
+            const temaSalvo = localStorage.getItem('dictionary-theme') || 'dark';
+            if (temaSalvo === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('theme-toggle').querySelector('span').textContent = 'Tema: Claro';
+                document.getElementById('theme-toggle').querySelector('i').className = 'fas fa-sun';
+            }
+            
+            const tamanhoFonte = localStorage.getItem('font-size') || '16';
+            document.documentElement.style.setProperty('--font-size-base', tamanhoFonte + 'px');
+            document.getElementById('font-size-slider').value = tamanhoFonte;
+            document.getElementById('font-size-value').textContent = tamanhoFonte + 'px';
+        }
+        
+        function setupEventListeners() {
+            // Busca
+            const searchInput = document.getElementById('global-search');
+            let searchTimeout;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    appState.currentSearch = this.value.trim();
+                    appState.currentPage = 0;
+                    loadWords(true);
+                }, 300);
+            });
+            
+            // Variantes
+            document.getElementById('variant-toggle').addEventListener('click', function() {
+                this.classList.toggle('active');
+                document.getElementById('variants-dropdown').classList.toggle('active');
+            });
+            
+            document.querySelectorAll('.variant-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const variant = this.dataset.variant;
+                    filterByVariant(variant);
+                });
+            });
+            
+            // Categorias
+            document.getElementById('categories-main').addEventListener('click', function(e) {
+                e.preventDefault();
+                const submenu = document.getElementById('categories-submenu');
+                submenu.classList.toggle('active');
+                const icon = this.querySelector('.fa-chevron-right');
+                icon.style.transform = submenu.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+            });
+            
+            document.querySelectorAll('.submenu-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const category = this.dataset.category;
+                    filterByCategory(category);
+                });
+            });
+            
+            // Carregar mais
+            document.getElementById('load-more-btn').addEventListener('click', function() {
+                appState.currentPage++;
+                loadWords(false);
+            });
+            
+            // Modal
+            document.getElementById('modal-close').addEventListener('click', function() {
+                document.getElementById('word-detail-modal').classList.remove('active');
+            });
+            
+            document.querySelectorAll('.modal-close').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.dataset.modal || 'word';
+                    document.getElementById(`${modal === 'stats' ? 'stats' : 'word-detail'}-modal`).classList.remove('active');
+                });
+            });
+            
+            document.getElementById('word-detail-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
+            // Tema
+            document.getElementById('theme-toggle').addEventListener('click', function() {
+                const isLight = document.body.classList.contains('light-theme');
+                
+                if (isLight) {
+                    document.body.classList.remove('light-theme');
+                    this.querySelector('span').textContent = 'Tema: Escuro';
+                    this.querySelector('i').className = 'fas fa-moon';
+                    localStorage.setItem('dictionary-theme', 'dark');
+                } else {
+                    document.body.classList.add('light-theme');
+                    this.querySelector('span').textContent = 'Tema: Claro';
+                    this.querySelector('i').className = 'fas fa-sun';
+                    localStorage.setItem('dictionary-theme', 'light');
+                }
+            });
+            
+            // Tamanho da fonte
+            document.getElementById('font-size-slider').addEventListener('input', function() {
+                const size = this.value + 'px';
+                document.documentElement.style.setProperty('--font-size-base', size);
+                document.getElementById('font-size-value').textContent = size;
+                localStorage.setItem('font-size', this.value);
+            });
+            
+            // Limpar cache
+            document.getElementById('clear-cache').addEventListener('click', function() {
+                if (confirm('Limpar cache do dicionário?\nIsso não apaga suas configurações.')) {
+                    if ('caches' in window) {
+                        caches.delete(CONFIG.CACHE_NAME);
+                    }
+                    localStorage.removeItem('dictionary-theme');
+                    localStorage.removeItem('font-size');
+                    alert('Cache limpo!');
+                }
+            });
+            
+            // Estatísticas
+            document.querySelector('[data-section="estatisticas"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showStatistics();
+            });
+            
+            // Menu mobile
+            document.getElementById('menu-toggle').addEventListener('click', function() {
+                document.getElementById('sidebar-nav').classList.toggle('active');
+            });
+            
+            // Fechar sidebar ao clicar fora (mobile)
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 1024) {
+                    const sidebar = document.getElementById('sidebar-nav');
+                    const menuToggle = document.getElementById('menu-toggle');
+                    
+                    if (sidebar.classList.contains('active') && 
+                        !sidebar.contains(event.target) && 
+                        !menuToggle.contains(event.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            });
+            
+            // Fechar modal com ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.getElementById('word-detail-modal').classList.remove('active');
+                    document.getElementById('stats-modal').classList.remove('active');
+                }
+            });
+        }
+        
+        // ============================================
+        // ESTATÍSTICAS
+        // ============================================
+        
+        function showStatistics() {
+            if (!appState.database) return;
+            
+            try {
+                // Estatísticas gerais
+                const stats = executeSingle(`
+                    SELECT 
+                        (SELECT COUNT(*) FROM palavras WHERE ativo = 1) as total_palavras,
+                        (SELECT COUNT(*) FROM variantes WHERE ativo = 1 AND codigo != 'all') as total_variantes,
+                        (SELECT COUNT(*) FROM categorias WHERE ativo = 1) as total_categorias,
+                        (SELECT COUNT(*) FROM significados) as total_significados,
+                        (SELECT COUNT(*) FROM exemplos) as total_exemplos,
+                        (SELECT valor FROM configuracoes WHERE chave = 'versao_banco') as versao_banco,
+                        (SELECT valor FROM configuracoes WHERE chave = 'ultima_atualizacao') as ultima_atualizacao
+                `);
+                
+                // Palavras por classe gramatical
+                const porClasse = executeQuery(`
+                    SELECT classe_gramatical, COUNT(*) as total
+                    FROM palavras
+                    WHERE ativo = 1
+                    GROUP BY classe_gramatical
+                    ORDER BY total DESC
+                `);
+                
+                // Palavras por categoria
+                const porCategoria = executeQuery(`
+                    SELECT categoria, COUNT(*) as total
+                    FROM palavras
+                    WHERE ativo = 1 AND categoria IS NOT NULL
+                    GROUP BY categoria
+                    ORDER BY total DESC
+                    LIMIT 10
+                `);
+                
+                // Palavras por frequência
+                const porFrequencia = executeQuery(`
+                    SELECT frequencia, COUNT(*) as total
+                    FROM palavras
+                    WHERE ativo = 1 AND frequencia IS NOT NULL
+                    GROUP BY frequencia
+                    ORDER BY 
+                        CASE frequencia
+                            WHEN 'muito alta' THEN 1
+                            WHEN 'alta' THEN 2
+                            WHEN 'média' THEN 3
+                            WHEN 'baixa' THEN 4
+                            ELSE 5
+                        END
+                `);
+                
+                // Construir HTML
+                let html = `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
+                        <div class="card" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent-color);">
+                                ${stats.total_palavras}
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Palavras</div>
+                        </div>
+                        
+                        <div class="card" style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--success-color);">
+                                ${stats.total_variantes}
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.9rem;">Variantes</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--accent-color);">
+                            <i class="fas fa-chart-pie"></i> Distribuição por Classe Gramatical
+                        </h3>
+                        <div style="display: grid; gap: 10px;">
+                            ${porClasse.map(item => `
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>${item.classe_gramatical}</span>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <div style="width: 100px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                                            <div style="width: ${(item.total / stats.total_palavras * 100)}%; 
+                                                 height: 100%; background: var(--accent-color); border-radius: 4px;"></div>
+                                        </div>
+                                        <span style="font-weight: 600;">${item.total}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px; color: var(--accent-color);">
+                            <i class="fas fa-tags"></i> Categorias Mais Populares
+                        </h3>
+                        <div style="display: grid; gap: 10px;">
+                            ${porCategoria.map(item => `
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>${item.categoria}</span>
+                                    <span style="font-weight: 600;">${item.total}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 12px;">
+                        <h3 style="margin-bottom: 15px; color: var(--accent-color);">
+                            <i class="fas fa-info-circle"></i> Informações Técnicas
+                        </h3>
+                        <div style="display: grid; gap: 10px; font-size: 0.9rem;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Versão do Banco:</span>
+                                <span>${stats.versao_banco}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Última Atualização:</span>
+                                <span>${stats.ultima_atualizacao || 'N/A'}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Significados:</span>
+                                <span>${stats.total_significados}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span>Exemplos:</span>
+                                <span>${stats.total_exemplos}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('stats-content').innerHTML = html;
+                document.getElementById('stats-modal').classList.add('active');
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        // ============================================
+        // SERVICE WORKER PARA PWA (OPCIONAL)
+        // ============================================
+        
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(error => {
+                    console.log('Service Worker falhou:', error);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
